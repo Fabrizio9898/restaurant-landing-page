@@ -1,22 +1,16 @@
-## Development
+<!-- BEGIN:agent-skills-rules -->
+# Engineering Skills
 
-When starting the dev server, use background mode:
+Este proyecto tiene una carpeta `skills/` con workflows de ingeniería (spec, testing, code review, animaciones/UI, etc).
 
-```
-astro dev --background
-```
+Cuando el pedido implique una feature nueva o cambio de código:
+1. Antes de codear, revisá `skills/spec-driven-development/SKILL.md` para definir el alcance.
+2. Rompé el trabajo en tareas chicas usando `skills/planning-and-task-breakdown/SKILL.md`.
+3. Implementá de forma incremental con `skills/incremental-implementation/SKILL.md`.
+4. Para UI, componentes y animaciones, seguí `skills/frontend-ui-engineering/SKILL.md`.
+5. Antes de dar por terminado, pasá por `skills/code-review-and-quality/SKILL.md`.
 
-Manage the background server with `astro dev stop`, `astro dev status`, and `astro dev logs`.
+Si el pedido es un bug o algo roto, usá `skills/debugging-and-error-recovery/SKILL.md`.
 
-## Documentation
-
-Full documentation: https://docs.astro.build
-
-Consult these guides before working on related tasks:
-
-- [Adding pages, dynamic routes, or middleware](https://docs.astro.build/en/guides/routing/)
-- [Working with Astro components](https://docs.astro.build/en/basics/astro-components/)
-- [Using React, Vue, Svelte, or other framework components](https://docs.astro.build/en/guides/framework-components/)
-- [Adding or managing content](https://docs.astro.build/en/guides/content-collections/)
-- [Adding styles or using Tailwind](https://docs.astro.build/en/guides/styling/)
-- [Supporting multiple languages](https://docs.astro.build/en/guides/internationalization/)
+No asumas que un skill aplica sin mirar su SKILL.md primero.
+<!-- END:agent-skills-rules -->
