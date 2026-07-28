@@ -1,0 +1,18 @@
+---
+import { site } from '../data/site';
+const { reservation } = site;
+---
+
+<section id="reservas" class="section-pad bg-[var(--color-wood-dark)] text-[var(--color-cream)] text-center" data-reveal>
+  <div class="section-inner max-w-xl">
+    <p class="section-label">Mesas</p>
+    <h2 class="section-title text-[var(--color-cream)]">{reservation.title}</h2>
+    <p class="mt-4 text-[var(--color-cream)]/75 leading-relaxed">{reservation.body}</p>
+    <span
+      class="mt-8 inline-block border border-[var(--color-gold)]/50 px-10 py-3 text-xs uppercase tracking-[0.25em] text-[var(--color-gold-light)] opacity-80 cursor-not-allowed"
+      aria-disabled="true"
+    >
+      {reservation.cta}
+    </span>
+  </div>
+</section>

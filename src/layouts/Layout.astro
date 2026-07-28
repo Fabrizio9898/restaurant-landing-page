@@ -1,32 +1,26 @@
 ---
-// Importa tus estilos aquí
 import '../styles/global.css';
+import { site } from '../data/site';
 
-// Props para hacer tu layout dinámico
 interface Props {
-	title: string;
+	title?: string;
 	description?: string;
 }
 
-const { title, description = "El mejor restaurante de la ciudad. Reserva tu mesa hoy." } = Astro.props;
+const { title = site.name, description = site.description } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="es"> <!-- Cambiado a 'es' para español -->
+<html lang="es">
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		
-		<!-- SEO Básico -->
 		<title>{title}</title>
 		<meta name="description" content={description} />
-		
-		<!-- Open Graph (para redes sociales) -->
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
 		<meta property="og:type" content="website" />
-		
 		<meta name="generator" content={Astro.generator} />
 	</head>
 	<body>
@@ -34,12 +28,15 @@ const { title, description = "El mejor restaurante de la ciudad. Reserva tu mesa
 	</body>
 </html>
 
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-		font-family: sans-serif; 
-	}
-</style>
+<script>
+	// ponytail: reveal sections on scroll
+	const observer = new IntersectionObserver((entries) => {
+		entries.forEach((e) => {
+			if (e.isIntersecting) {
+				e.target.classList.add('is-visible');
+				observer.unobserve(e.target);
+			}
+		});
+	}, { threshold: 0.12 });
+	document.querySelectorAll('[data-reveal]').forEach((el) => observer.observe(el));
+</script>

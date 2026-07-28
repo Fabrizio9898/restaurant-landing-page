@@ -1,0 +1,31 @@
+---
+import { site } from '../data/site';
+const teasers = site.gallery.slice(0, 4);
+---
+
+<section id="gallery" class="section-pad bg-[var(--color-cream)]" data-reveal>
+  <div class="section-inner">
+    <p class="section-label">Ambiente</p>
+    <h2 class="section-title">Galería</h2>
+    <div class="mt-12 grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+      {teasers.map((src, i) => (
+        <div class="overflow-hidden aspect-[4/5]">
+          <img
+            src={src}
+            alt={`Galería ${i + 1}`}
+            class="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+            loading="lazy"
+          />
+        </div>
+      ))}
+    </div>
+    <div class="mt-12 text-center">
+      <a
+        href="/galeria-fotos"
+        class="inline-block border border-[var(--color-wood)]/40 px-8 py-3 text-xs uppercase tracking-[0.25em] text-[var(--color-wood-dark)] transition-all duration-300 hover:border-[var(--color-wood-dark)] hover:bg-[var(--color-wood-dark)] hover:text-[var(--color-cream)]"
+      >
+        Ver todas las fotos
+      </a>
+    </div>
+  </div>
+</section>

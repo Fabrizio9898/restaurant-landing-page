@@ -1,1 +1,189 @@
 @import "tailwindcss";
+
+
+:root {
+  --color-black: #0a0a0a;
+  --color-white: #ffffff;
+  --color-cream: #f7f3eb;
+  --color-wood: #6b4f3a;
+  --color-wood-dark: #3d2c22;
+  --color-gray-100: #f5f5f5;
+  --color-gray-200: #e5e5e5;
+  --color-gray-300: #d4d4d4;
+  --color-gray-500: #737373;
+  --color-gray-900: #1a1a1a;
+  --color-gold: #c9a94e;
+  --color-gold-light: #e8d48b;
+  --text-body:        var(--color-black);
+--text-muted:       var(--color-wood-dark);
+--text-on-dark:     var(--color-cream);
+--text-accent:      var(--color-gold);
+--bg-primary:       var(--color-cream);
+--bg-dark:          var(--color-black);
+--bg-wood:          var(--color-wood-dark);
+--border-light:     var(--color-wood)/15;
+--border-accent:    var(--color-gold)/50;
+--btn-primary-bg:   var(--color-gold);
+--btn-primary-text: var(--color-black);
+--btn-outline-border: var(--color-wood-dark);
+--btn-outline-hover-bg: var(--color-wood);
+--btn-outline-hover-text: var(--color-white);
+
+  /* --- Tipografías --- */
+  --font-sans: "Jost"
+   -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-serif: "Cormorant Garamond";
+
+  
+  --gutter: clamp(1rem, 0.85rem + 0.75vw, 1.5rem);
+  --spacing-xs: clamp(0.625rem, 0.5rem + 0.5vw, 0.9375rem);
+  --spacing-sm: var(--gutter);
+  --spacing-md: calc(var(--gutter) * 2);
+  --spacing-lg: calc(var(--gutter) * 3);
+  --spacing-xl: calc(var(--gutter) * 5);
+  --spacing-2xl: calc(var(--gutter) * 8);
+
+  /* --- Escala tipográfica fluida (min/preferido/max, tipo clamp) --- */
+  --font-size-body: clamp(1rem, 0.95rem + 0.2vw, 1.0625rem);
+  --font-size-body-lg: clamp(1.125rem, 1rem + 0.5vw, 1.375rem);
+  --font-size-body-sm: clamp(0.8125rem, 0.78rem + 0.15vw, 0.875rem);
+  --font-size-h1: clamp(2.25rem, 1.6rem + 3vw, 4.5rem);
+  --font-size-h2: clamp(2rem, 1.5rem + 2.5vw, 3.75rem);
+  --font-size-h3: clamp(1.75rem, 1.4rem + 1.5vw, 2.75rem);
+  --font-size-h4: clamp(1.375rem, 1.2rem + 0.8vw, 1.75rem);
+
+  /* --- Letter-spacing "boutique" del sitio original --- */
+  --tracking-body: 0.05em;
+  --tracking-label: 0.25em;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-cream);
+  color: var(--color-black);
+  font-family: var(--font-sans);
+  font-weight: 300;
+  font-size: var(--font-size-body);
+  letter-spacing: var(--tracking-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Encabezados con la serif */
+h1, h2, h3, h4 {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--color-black);
+}
+
+.btn {
+  display: inline-block;
+  padding:  0.625rem 1.5rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  transition: all 0.3s;
+  text-align: center;
+}
+.btn-primary {
+  background: var(--color-gold);
+  color: var(--color-black);
+}
+.btn-primary:hover {
+  background: var(--color-gold-light);
+}
+.btn-outline {
+  border: 1px solid var(--color-wood-dark);
+  color: var(--color-wood-dark);
+}
+.btn-outline:hover {
+  background: var(--color-wood);
+  border-color: var(--color-wood);
+  color: var(--color-white);
+}
+.btn-outline-gold {
+  border: 1px solid color-mix(in srgb, var(--color-gold) 50%, transparent);
+  color: var(--color-gold-light);
+}
+.btn-outline-gold:hover {
+  border-color: var(--color-gold);
+  color: var(--color-gold);
+}
+/* ==========================================================================
+   Layout helpers (flex, sin grid) usando la escala de spacing fluida
+   ========================================================================== */
+
+.section-pad {
+  padding: var(--spacing-xl) var(--gutter);
+}
+
+.section-inner {
+  max-width: 72rem;
+  margin-inline: auto;
+}
+
+.section-label {
+  font-size: var(--font-size-body-sm);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--color-gold);
+  font-weight: 600;
+  font-family: var(--font-sans);
+}
+
+.section-title {
+  font-family: var(--font-serif);
+  font-size: var(--font-size-h2);
+  font-weight: 500;
+  margin-top: var(--spacing-xs);
+  color: var(--color-black);
+  line-height: 1.1;
+}
+
+/* ponytail: reveal on scroll via IntersectionObserver */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+[data-reveal].is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ponytail: hero slider crossfade */
+.hero-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+.hero-slide.is-active {
+  opacity: 1;
+}
+
+/* ponytail: floating reserve button */
+#floating-reserve {
+  position: fixed;
+  bottom: var(--spacing-sm);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 999;
+  opacity: 1;
+  pointer-events: auto;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+#floating-reserve.is-hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-50%) translateY(0.5rem);
+}

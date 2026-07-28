@@ -1,0 +1,31 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { site } from '../data/site';
+const { reservation } = site;
+---
+
+<Layout title={`Reservas — ${site.name}`}>
+	<Header />
+	<main class="pt-28 bg-[var(--color-cream)] min-h-[60vh] flex items-center justify-center text-center">
+		<section class="section-pad w-full">
+			<div class="section-inner max-w-xl">
+				<p class="section-label">Mesas</p>
+				<h1 class="section-title">{reservation.title}</h1>
+				<p class="mt-5 text-[var(--color-wood-dark)] leading-relaxed">{reservation.body}</p>
+				<div class="mt-8 flex flex-col gap-3 text-sm text-[var(--color-wood)]">
+					<a href={`tel:${site.location.phone.replace(/\s/g, '')}`} class="hover:text-[var(--color-gold)]">{site.location.phone}</a>
+					<a href={`mailto:${site.location.email}`} class="hover:text-[var(--color-gold)]">{site.location.email}</a>
+				</div>
+				<span
+					class="mt-8 inline-block border border-[var(--color-gold)]/50 px-10 py-3 text-xs uppercase tracking-[0.25em] text-[var(--color-gold)] opacity-80 cursor-not-allowed"
+					aria-disabled="true"
+				>
+					{reservation.cta}
+				</span>
+			</div>
+		</section>
+	</main>
+	<Footer />
+</Layout>

@@ -1,0 +1,20 @@
+---
+import { site } from '../data/site';
+---
+
+<footer class="bg-[var(--color-black)] text-[var(--color-cream)]/80 py-12 px-6 pb-24 md:pb-12">
+  <div class="max-w-6xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-8">
+    <div>
+      <p class="font-serif text-xl tracking-[0.2em] text-[var(--color-cream)]">{site.shortName}</p>
+      <p class="mt-2 text-sm text-[var(--color-cream)]/50">{site.name}</p>
+    </div>
+    <ul class="flex gap-6 text-xs uppercase tracking-widest">
+      <li><a href={site.social.instagram} class="hover:text-[var(--color-gold)]">Instagram</a></li>
+      <li><a href={site.social.facebook} class="hover:text-[var(--color-gold)]">Facebook</a></li>
+      <li><a href={site.social.tiktok} class="hover:text-[var(--color-gold)]">TikTok</a></li>
+    </ul>
+    <p class="text-xs text-[var(--color-cream)]/40">
+      © {new Date().getFullYear()} {site.name}
+    </p>
+  </div>
+</footer>

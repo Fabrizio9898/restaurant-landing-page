@@ -1,0 +1,63 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { site } from '../data/site';
+---
+
+<Layout title={`Galería — ${site.name}`}>
+	<Header />
+	<main class="pt-28 bg-[var(--color-cream)] min-h-screen">
+		<section class="section-pad">
+			<div class="section-inner">
+				<p class="section-label">Ambiente</p>
+				<h1 class="section-title">Galería de fotos</h1>
+				<div class="mt-12 grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
+					{site.gallery.map((src, i) => (
+						<div class="overflow-hidden aspect-[4/5] cursor-pointer" data-lightbox={i}>
+							<img
+								src={src}
+								alt={`Foto ${i + 1}`}
+								class="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+								loading="lazy"
+							/>
+							</div>
+						))}
+					</div>
+				</div>
+			</section>
+		</main>
+		<Footer />
+	</Layout>
+
+	<!-- ponytail: lightbox con backdrop, un div, 30 líneas JS -->
+	<div id="lb-backdrop" class="fixed inset-0 z-[1000] bg-black/90 hidden items-center justify-center p-4 cursor-pointer">
+		<img id="lb-img" src="" alt="" class="max-h-[85vh] max-w-full shadow-2xl object-contain transition-transform" />
+	</div>
+
+	<script>
+		const backdrop = document.getElementById('lb-backdrop')!;
+		const lbImg = document.getElementById('lb-img') as HTMLImageElement;
+		const items = document.querySelectorAll<HTMLElement>('[data-lightbox]');
+
+		const open = (src: string) => {
+			lbImg.src = src;
+			backdrop.classList.remove('hidden');
+			backdrop.classList.add('flex');
+			document.body.classList.add('overflow-hidden');
+		};
+		const close = () => {
+			backdrop.classList.add('hidden');
+			backdrop.classList.remove('flex');
+			document.body.classList.remove('overflow-hidden');
+			lbImg.src = '';
+		};
+
+		items.forEach((item) => {
+			const img = item.querySelector('img');
+			if (!img) return;
+			item.addEventListener('click', () => open(img.src));
+		});
+		backdrop.addEventListener('click', close);
+		document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+	</script>

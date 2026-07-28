@@ -1,0 +1,117 @@
+---
+import { site } from '../data/site';
+
+const links = [
+  { href: '/#about', label: 'Sobre nosotros' },
+  { href: '/menu', label: 'Menú' },
+  { href: '/galeria-fotos', label: 'Galería' },
+  { href: '/#location', label: 'Ubicación' },
+];
+const isHome = Astro.url.pathname === '/';
+---
+
+<header
+  id="main-header"
+  class="fixed top-0 left-0 z-50 w-full bg-(--color-cream)/80 backdrop-blur-sm text-black border-b border-(--color-wood)/15 transition-all duration-300 h-20"
+>
+  <div class="relative z-50 mx-auto  px-6 h-full flex items-center justify-between">
+    <a href="/" class="flex items-center gap-2">
+      <span class="text-xl md:text-2xl font-serif tracking-[0.2em] font-semibold">
+        {site.shortName}
+      </span>
+    </a>
+
+    <nav class="hidden md:flex items-center gap-10">
+      <ul class="flex items-center gap-8 text-xs uppercase tracking-[0.2em] font-medium text-(--color-wood-dark)">
+        {links.map((l) => (
+          <li>
+            <a
+              href={l.href}
+              class="hover:text-black transition-colors duration-200 py-2 relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-px after:bg-(--color-gold) hover:after:w-full after:transition-all"
+            >
+              {l.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+      <a
+        href="/reservas"
+        class="btn btn-outline"
+      >
+        Reservar
+      </a>
+    </nav>
+
+    <button
+      class="md:hidden flex flex-col justify-center items-center w-10 h-10 gap-1.5 focus:outline-none"
+      aria-label="Abrir menú"
+      id="hamburger-btn"
+      type="button"
+    >
+      <span class="w-7 h-[1.5px] bg-black transition-all duration-300 origin-center" id="line1"></span>
+      <span class="w-7 h-[1.5px] bg-black transition-all duration-300 origin-center" id="line2"></span>
+    </button>
+  </div>
+
+  <nav
+    id="nav-menu"
+    class="opacity-0 pointer-events-none md:hidden fixed inset-0 w-screen h-screen bg-(--color-cream)/98 backdrop-blur-xl z-40 transition-opacity duration-300 pt-28 pb-10 px-8 flex flex-col justify-between"
+  >
+    <ul class="flex flex-col gap-6 text-2xl font-serif text-black">
+      {links.map((l) => (
+        <li><a href={l.href} class="mobile-link">{l.label}</a></li>
+      ))}
+      <li><a href="/reservas" class="mobile-link text-(--color-gold)">Reservar</a></li>
+    </ul>
+    <ul class="flex flex-col gap-3 text-sm text-(--color-wood)">
+      <li><a href={site.social.instagram} class="mobile-link">Instagram</a></li>
+      <li><a href={site.social.facebook} class="mobile-link">Facebook</a></li>
+      <li><a href={site.social.tiktok} class="mobile-link">TikTok</a></li>
+    </ul>
+  </nav>
+</header>
+
+<script>
+  const floatingBtn = document.getElementById('floating-reserve');
+
+  const header = document.getElementById('main-header');
+  const hamburgerBtn = document.getElementById('hamburger-btn');
+  const navMenu = document.getElementById('nav-menu');
+  const mobileLinks = document.querySelectorAll('.mobile-link');
+  const line1 = document.getElementById('line1');
+  const line2 = document.getElementById('line2');
+
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 20) {
+      header?.classList.add('shadow-sm', 'h-16');
+      header?.classList.remove('h-20');
+    } else {
+      header?.classList.add('h-20');
+      header?.classList.remove('shadow-sm', 'h-16');
+    }
+  });
+
+  if (hamburgerBtn && navMenu) {
+    const close = () => {
+      navMenu.classList.add('opacity-0', 'pointer-events-none');
+      line1?.classList.remove('rotate-45', 'translate-y-[5px]');
+      line2?.classList.remove('-rotate-45', '-translate-y-[5px]');
+      document.body.classList.remove('overflow-hidden');
+      floatingBtn?.classList.remove('is-hidden');
+
+    };
+    const open = () => {
+      navMenu.classList.remove('opacity-0', 'pointer-events-none');
+      line1?.classList.add('rotate-45', 'translate-y-[5px]');
+      line2?.classList.add('-rotate-45', '-translate-y-[5px]');
+      document.body.classList.add('overflow-hidden');
+      floatingBtn?.classList.add('is-hidden');
+
+    };
+
+    hamburgerBtn.addEventListener('click', () => {
+      navMenu.classList.contains('opacity-0') ? open() : close();
+    });
+    mobileLinks.forEach((link) => link.addEventListener('click', close));
+  }
+</script>

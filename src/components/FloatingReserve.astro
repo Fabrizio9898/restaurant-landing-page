@@ -1,0 +1,26 @@
+---
+import { site } from '../data/site';
+---
+
+<a
+  id="floating-reserve"
+  href="/reservas"
+  class="btn btn-primary shadow-lg"
+  aria-label="Reservar mesa"
+>
+  Reservar
+</a>
+
+<script>
+  const btn = document.getElementById('floating-reserve');
+  const section = document.getElementById('reservas');
+  if (btn && section) {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        btn.classList.toggle('is-hidden', entry.isIntersecting);
+      },
+      { threshold: 0.4 }
+    );
+    observer.observe(section);
+  }
+</script>

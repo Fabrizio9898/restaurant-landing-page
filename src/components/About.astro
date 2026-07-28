@@ -1,0 +1,24 @@
+---
+import { site } from '../data/site';
+const { about } = site;
+---
+
+<section id="about" class="section-pad bg-[var(--color-cream)]" data-reveal>
+  <div class="section-inner grid gap-12 md:grid-cols-2 md:items-center">
+    <div>
+      <p class="section-label">El restaurante</p>
+      <h2 class="section-title">{about.title}</h2>
+      <p class="mt-6 text-[var(--color-wood-dark)] leading-relaxed text-base md:text-lg">
+        {about.body}
+      </p>
+    </div>
+    <div class="overflow-hidden border border-[var(--color-wood)]/20 shadow-md">
+      <img
+        src={about.image}
+        alt="Ambiente del restaurante"
+        class="w-full h-72 md:h-96 object-cover"
+        loading="lazy"
+      />
+    </div>
+  </div>
+</section>
