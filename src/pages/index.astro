@@ -13,9 +13,17 @@ import FloatingReserve from '../components/FloatingReserve.astro';
 
 <Layout>
 	<Header />
-	<main>
+<main class="flex flex-col ">
+
 		<Hero />
-		<About />
+		<About videoSrc="/videos/video.mp4"
+  videoPoster="/images/poster.jpg"
+  image1="/photos/plato1.webp"
+  image2="/photos/plato2.webp"
+  title="Único en París"
+  text="Our establishment welcomes you in a chic and warm decor, where every detail has been thought of for your comfort. Whether it's for a business lunch, a romantic dinner or an evening with friends, the brasserie offers the ideal setting for savoring special moments."
+  buttonLabel="Reservar mesa"
+  buttonHref="/reservas"/>
 		<Menu />
 		<Gallery />
 		<Location />

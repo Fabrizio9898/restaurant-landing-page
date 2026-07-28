@@ -1,24 +1,160 @@
 ---
-import { site } from '../data/site';
-const { about } = site;
+import IconArrow from '../svgs/arrow.astro';
+
+interface Props {
+    videoSrc: string;
+    videoPoster?: string;
+    image1: string;
+    image2: string;
+    title: string;
+    text: string;
+    buttonLabel: string;
+    buttonHref: string;
+}
+
+const {
+    videoSrc,
+    videoPoster,
+    image1,
+    image2,
+    title,
+    text,
+    buttonLabel,
+    buttonHref,
+} = Astro.props;
 ---
 
-<section id="about" class="section-pad bg-[var(--color-cream)]" data-reveal>
-  <div class="section-inner grid gap-12 md:grid-cols-2 md:items-center">
-    <div>
-      <p class="section-label">El restaurante</p>
-      <h2 class="section-title">{about.title}</h2>
-      <p class="mt-6 text-[var(--color-wood-dark)] leading-relaxed text-base md:text-lg">
-        {about.body}
-      </p>
+<section class="video-scroll-section">
+    <div class="video-scroll-section__row">
+        <!-- Columna A: el video llena el 100% de ESTE div, no de la pantalla -->
+        <div class="video-scroll-section__video-col">
+            <video
+                class="video-scroll-section__video"
+                poster={videoPoster}
+                autoplay
+                muted
+                loop
+                playsinline
+                preload="auto"
+                aria-hidden="true"
+            >
+
+             <source src={videoSrc} type="video/mp4" type="video/webm" />
+        <source src={videoSrc} type="video/mp4" type="video/mp4" />
+        </video>
+        </div>
+
+        <!-- Columna B: contenido que scrollea normal -->
+        <div class="video-scroll-section__content-col">
+          <div>
+            <figure class="video-scroll-section__figure">
+                <img src={image1} alt="" class="video-scroll-section__img" />
+            </figure>
+
+            <div class="video-scroll-section__text">
+                <h2 class="section-title">{title}</h2>
+                <p>{text}</p>
+                <a href={buttonHref} class="btn btn-outline ">
+   <IconArrow class="mr-xs" />
+{buttonLabel}
+</a>
+            </div>
+
+            <figure class="video-scroll-section__figure">
+                <img src={image2} alt="" class="video-scroll-section__img" />
+            </figure>
+            </div>
+        </div>
     </div>
-    <div class="overflow-hidden border border-[var(--color-wood)]/20 shadow-md">
-      <img
-        src={about.image}
-        alt="Ambiente del restaurante"
-        class="w-full h-72 md:h-96 object-cover"
-        loading="lazy"
-      />
-    </div>
-  </div>
 </section>
+
+<style>
+    /* --- La sección: acá vive el padding real --- */
+    .video-scroll-section {
+        width: 100%;
+        padding: var(--spacing-xl) var(--gutter);
+    }
+
+    /* --- La fila: columna en mobile, fila en desktop --- */
+    .video-scroll-section__row {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-lg);
+        max-width: 90rem;
+        margin-inline: auto;
+    }
+
+    .section-title{
+          font-size: var(--font-size-h2);
+    line-height: 1.1;
+    margin-bottom: var(--spacing-md);
+    margin-top: var(--spacing-md);
+    }
+
+    /* --- Columna del video: en mobile ocupa el ancho completo,
+       altura fija razonable (no 100vh) --- */
+    .video-scroll-section__video-col {
+        width: 100%;
+        height: 50vh;
+        overflow: hidden;
+    }
+
+    /* El video llena el 100% de SU contenedor (video-col),
+       nunca del viewport directamente */
+    .video-scroll-section__video {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .video-scroll-section__content-col {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-lg);
+    }
+
+    .video-scroll-section__figure {
+        width: 100%;
+    }
+
+    .video-scroll-section__img {
+        display: block;
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+    }
+
+    .video-scroll-section__text p {
+        color: var(--color-wood-dark);
+        margin-bottom: var(--spacing-md);
+    }
+    
+.video-scroll-section__text a{
+  margin-bottom: var(--spacing-md);
+}
+    /* --- Desktop: fila con dos columnas, video sticky ---
+       El sticky queda "contenido": top respeta el padding de la
+       sección (no pega el video al borde absoluto de la pantalla),
+       y su altura es relativa al viewport MENOS ese padding, así
+       nunca se sale del área delimitada por la section. */
+    @media (min-width: 1000px) {
+        .video-scroll-section__row {
+            flex-direction: row;
+            align-items: flex-start;
+            gap: var(--spacing-xl);
+        }
+
+        .video-scroll-section__video-col {
+            width: 50%;
+            position: sticky;
+            top: var(--spacing-xl);
+            height: calc(100vh - var(--spacing-xl) * 2);
+        }
+
+        .video-scroll-section__content-col {
+            width: 50%;
+        }
+    }
+</style>

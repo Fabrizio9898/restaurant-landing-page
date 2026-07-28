@@ -2,10 +2,10 @@
 import { site } from '../data/site';
 
 const links = [
-  { href: '/#about', label: 'Sobre nosotros' },
-  { href: '/menu', label: 'Menú' },
-  { href: '/galeria-fotos', label: 'Galería' },
-  { href: '/#location', label: 'Ubicación' },
+  { href: '/#about', label: 'Sobre nosotros', id: 'about' },
+  { href: '/menu', label: 'Menú', id: 'menu' },
+  { href: '/galeria-fotos', label: 'Galería', id: 'galeria' },
+  { href: '/#location', label: 'Ubicación', id: 'location' },
 ];
 const isHome = Astro.url.pathname === '/';
 ---
@@ -27,7 +27,8 @@ const isHome = Astro.url.pathname === '/';
           <li>
             <a
               href={l.href}
-              class="hover:text-black transition-colors duration-200 py-2 relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-px after:bg-(--color-gold) hover:after:w-full after:transition-all"
+              data-nav-link={l.id}
+              class="nav-link hover:text-black transition-colors duration-200 py-2 relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-px after:bg-(--color-gold) after:transition-all hover:after:w-full"
             >
               {l.label}
             </a>
@@ -55,21 +56,69 @@ const isHome = Astro.url.pathname === '/';
 
   <nav
     id="nav-menu"
-    class="opacity-0 pointer-events-none md:hidden fixed inset-0 w-screen h-screen bg-(--color-cream)/98 backdrop-blur-xl z-40 transition-opacity duration-300 pt-28 pb-10 px-8 flex flex-col justify-between"
+    class="md:hidden fixed inset-0 w-screen h-screen bg-white/95 backdrop-blur-xl z-40 pt-28 pb-10 px-8 flex flex-col justify-between min-[450px]:flex-row min-[450px]:justify-between min-[450px]:items-center"
   >
     <ul class="flex flex-col gap-6 text-2xl font-serif text-black">
       {links.map((l) => (
-        <li><a href={l.href} class="mobile-link">{l.label}</a></li>
+        <li><a href={l.href} data-nav-link={l.id} class="mobile-link nav-link">{l.label}</a></li>
       ))}
       <li><a href="/reservas" class="mobile-link text-(--color-gold)">Reservar</a></li>
     </ul>
-    <ul class="flex flex-col gap-3 text-sm text-(--color-wood)">
+    <ul class="flex flex-col gap-4 text-sm font-light text-zinc-600 max-[450px]:self-end mt-12 sm:mt-0">
       <li><a href={site.social.instagram} class="mobile-link">Instagram</a></li>
       <li><a href={site.social.facebook} class="mobile-link">Facebook</a></li>
       <li><a href={site.social.tiktok} class="mobile-link">TikTok</a></li>
     </ul>
   </nav>
 </header>
+
+<style>
+  /* --- Menú mobile con clip-path (estilo Onyx) ---
+     Nace como un círculo invisible desde el botón hamburguesa
+     (esquina superior derecha) y se expande a pantalla completa.
+     pointer-events lo maneja JS para que sea clickeable recién
+     cuando está totalmente abierto. */
+  #nav-menu {
+    clip-path: circle(1.5rem at calc(100% - 2.75rem) 2.5rem);
+    opacity: 0;
+    transition: clip-path 0.6s cubic-bezier(0.65, 0, 0.35, 1),
+      opacity 0.3s ease;
+    pointer-events: none;
+  }
+
+  #nav-menu.is-open {
+    clip-path: circle(150% at calc(100% - 2.75rem) 2.5rem);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #nav-menu {
+      transition: opacity 0.3s ease;
+      clip-path: none;
+      display: none;
+    }
+    #nav-menu.is-open {
+      display: flex;
+    }
+  }
+
+  /* --- Header que se esconde al bajar, reaparece al subir --- */
+  #main-header {
+    transition: transform 0.35s ease, height 0.3s ease, box-shadow 0.3s ease;
+  }
+  #main-header.is-hidden {
+    transform: translateY(-100%);
+  }
+
+  /* --- Link activo del scroll-spy: mismo underline dorado que el hover --- */
+  .nav-link.is-active {
+    color: #000;
+  }
+  .nav-link.is-active::after {
+    width: 100%;
+  }
+</style>
 
 <script>
   const floatingBtn = document.getElementById('floating-reserve');
@@ -81,37 +130,70 @@ const isHome = Astro.url.pathname === '/';
   const line1 = document.getElementById('line1');
   const line2 = document.getElementById('line2');
 
+  /* --- Shrink + hide-on-scroll-down / show-on-scroll-up --- */
+  let lastScrollY = window.scrollY;
+
   window.addEventListener('scroll', () => {
-    if (window.scrollY > 20) {
+    const y = window.scrollY;
+
+    if (y > 20) {
       header?.classList.add('shadow-sm', 'h-16');
       header?.classList.remove('h-20');
     } else {
       header?.classList.add('h-20');
       header?.classList.remove('shadow-sm', 'h-16');
     }
-  });
 
+    // Solo escondemos si bajamos y ya pasamos la altura del propio header
+    if (y > lastScrollY && y > 120) {
+      header?.classList.add('is-hidden');
+    } else {
+      header?.classList.remove('is-hidden');
+    }
+    lastScrollY = y;
+  }, { passive: true });
+
+  /* --- Menú mobile con clip-path --- */
   if (hamburgerBtn && navMenu) {
     const close = () => {
-      navMenu.classList.add('opacity-0', 'pointer-events-none');
+      navMenu.classList.remove('is-open');
       line1?.classList.remove('rotate-45', 'translate-y-[5px]');
       line2?.classList.remove('-rotate-45', '-translate-y-[5px]');
       document.body.classList.remove('overflow-hidden');
       floatingBtn?.classList.remove('is-hidden');
-
     };
     const open = () => {
-      navMenu.classList.remove('opacity-0', 'pointer-events-none');
+      navMenu.classList.add('is-open');
       line1?.classList.add('rotate-45', 'translate-y-[5px]');
       line2?.classList.add('-rotate-45', '-translate-y-[5px]');
       document.body.classList.add('overflow-hidden');
       floatingBtn?.classList.add('is-hidden');
-
     };
 
     hamburgerBtn.addEventListener('click', () => {
-      navMenu.classList.contains('opacity-0') ? open() : close();
+      navMenu.classList.contains('is-open') ? close() : open();
     });
     mobileLinks.forEach((link) => link.addEventListener('click', close));
+  }
+
+  /* --- Scroll-spy: resalta el link de la sección visible --- */
+  const sections = document.querySelectorAll('main section[id]');
+  const navLinks = document.querySelectorAll('.nav-link');
+
+  if (sections.length && navLinks.length) {
+    const spyObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          navLinks.forEach((link) => {
+            const match = link.getAttribute('data-nav-link') === entry.target.id;
+            link.classList.toggle('is-active', match);
+          });
+        });
+      },
+      { rootMargin: '-40% 0px -55% 0px', threshold: 0 }
+    );
+
+    sections.forEach((section) => spyObserver.observe(section));
   }
 </script>

@@ -1,40 +1,58 @@
 @import "tailwindcss";
 
-
 :root {
+  /* ==========================================================================
+     PALETA BASE — simplificada, inspirada en el azul marino de Onyx
+     ========================================================================== */
   --color-black: #0a0a0a;
   --color-white: #ffffff;
   --color-cream: #f7f3eb;
-  --color-wood: #6b4f3a;
-  --color-wood-dark: #3d2c22;
+
+  --color-blue: #0c1e30;        /* azul principal — hover de botones, acentos fuertes */
+  --color-blue-light: #1e3a54;  /* variante más clara, para textos secundarios/bordes */
+  --color-blue-dark: #08141f;   /* variante más oscura, por si hace falta más contraste */
+
+  --color-gold: #c9a94e;        /* acento dorado, se mantiene como detalle sutil */
+  --color-gold-light: #e8d48b;
+
   --color-gray-100: #f5f5f5;
   --color-gray-200: #e5e5e5;
   --color-gray-300: #d4d4d4;
   --color-gray-500: #737373;
-  --color-gray-900: #1a1a1a;
-  --color-gold: #c9a94e;
-  --color-gold-light: #e8d48b;
-  --text-body:        var(--color-black);
---text-muted:       var(--color-wood-dark);
---text-on-dark:     var(--color-cream);
---text-accent:      var(--color-gold);
---bg-primary:       var(--color-cream);
---bg-dark:          var(--color-black);
---bg-wood:          var(--color-wood-dark);
---border-light:     var(--color-wood)/15;
---border-accent:    var(--color-gold)/50;
---btn-primary-bg:   var(--color-gold);
---btn-primary-text: var(--color-black);
---btn-outline-border: var(--color-wood-dark);
---btn-outline-hover-bg: var(--color-wood);
---btn-outline-hover-text: var(--color-white);
+
+  /* ==========================================================================
+     ALIAS DE COMPATIBILIDAD
+     Tu Header.astro (y probablemente otros componentes) ya usan
+     var(--color-wood) y var(--color-wood-dark) en un montón de lugares
+     (bordes, hover, texto). En vez de que vayas componente por componente
+     reemplazando eso, simplemente hago que esos nombres ahora apunten
+     al azul. Resultado: todo lo que antes se ponía "madera" al hacer
+     hover, ahora se pone azul, gratis, sin tocar el Header.
+     ========================================================================== */
+  --color-wood: var(--color-blue-light);
+  --color-wood-dark: var(--color-blue);
+
+  /* ==========================================================================
+     TOKENS SEMÁNTICOS — arreglados (antes tenían sintaxis de Tailwind
+     tipo var(--x)/15 metida dentro de una variable CSS, que no es válido)
+     ========================================================================== */
+  --text-body: var(--color-black);
+  --text-muted: var(--color-blue-light);
+  --text-on-dark: var(--color-cream);
+  --text-accent: var(--color-gold);
+
+  --bg-primary: var(--color-cream);
+  --bg-dark: var(--color-black);
+  --bg-blue: var(--color-blue);
+
+  --border-light: color-mix(in srgb, var(--color-blue) 15%, transparent);
+  --border-accent: color-mix(in srgb, var(--color-gold) 50%, transparent);
 
   /* --- Tipografías --- */
-  --font-sans: "Jost"
-   -apple-system, "Segoe UI", Roboto, sans-serif;
-  --font-serif: "Cormorant Garamond";
+  --font-sans: "Jost", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-serif: "Cormorant Garamond", Georgia, "Times New Roman", serif;
 
-  
+  /* --- Espaciado fluido --- */
   --gutter: clamp(1rem, 0.85rem + 0.75vw, 1.5rem);
   --spacing-xs: clamp(0.625rem, 0.5rem + 0.5vw, 0.9375rem);
   --spacing-sm: var(--gutter);
@@ -43,7 +61,7 @@
   --spacing-xl: calc(var(--gutter) * 5);
   --spacing-2xl: calc(var(--gutter) * 8);
 
-  /* --- Escala tipográfica fluida (min/preferido/max, tipo clamp) --- */
+  /* --- Escala tipográfica fluida --- */
   --font-size-body: clamp(1rem, 0.95rem + 0.2vw, 1.0625rem);
   --font-size-body-lg: clamp(1.125rem, 1rem + 0.5vw, 1.375rem);
   --font-size-body-sm: clamp(0.8125rem, 0.78rem + 0.15vw, 0.875rem);
@@ -52,9 +70,9 @@
   --font-size-h3: clamp(1.75rem, 1.4rem + 1.5vw, 2.75rem);
   --font-size-h4: clamp(1.375rem, 1.2rem + 0.8vw, 1.75rem);
 
-  /* --- Letter-spacing "boutique" del sitio original --- */
-  --tracking-body: 0.05em;
-  --tracking-label: 0.25em;
+  /* --- Letter-spacing "boutique" --- */
+  --tracking-body: 0.03em;
+  --tracking-label: 0.2em;
 }
 
 * {
@@ -77,7 +95,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Encabezados con la serif */
 h1, h2, h3, h4 {
   font-family: var(--font-serif);
   font-weight: 500;
@@ -85,41 +102,66 @@ h1, h2, h3, h4 {
   color: var(--color-black);
 }
 
+/* ==========================================================================
+   BOTONES — un solo sistema, mismo comportamiento de hover en todos:
+   base blanco/negro -> hover azul con texto blanco.
+   ========================================================================== */
+
 .btn {
-  display: inline-block;
-  padding:  0.625rem 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.75rem;
+  font-family: var(--font-sans);
   font-size: 0.75rem;
+  font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.2em;
-  transition: all 0.3s;
+  letter-spacing: var(--tracking-label);
   text-align: center;
-}
-.btn-primary {
-  background: var(--color-gold);
+  border: 1px solid var(--color-black);
+  background: var(--color-white);
   color: var(--color-black);
+  cursor: pointer;
+  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
-.btn-primary:hover {
-  background: var(--color-gold-light);
-}
-.btn-outline {
-  border: 1px solid var(--color-wood-dark);
-  color: var(--color-wood-dark);
-}
-.btn-outline:hover {
-  background: var(--color-wood);
-  border-color: var(--color-wood);
+
+.btn:hover,
+.btn:focus-visible {
+  background: var(--color-blue);
+  border-color: var(--color-blue);
   color: var(--color-white);
 }
-.btn-outline-gold {
-  border: 1px solid color-mix(in srgb, var(--color-gold) 50%, transparent);
+
+/* Variante outline: transparente en vez de blanco, mismo hover azul */
+.btn-outline {
+  background: transparent;
+  border-color: var(--color-black);
+  color: var(--color-black);
+}
+.btn-outline:hover,
+.btn-outline:focus-visible {
+  background: var(--color-blue);
+  border-color: var(--color-blue);
+  color: var(--color-white);
+}
+
+/* Variante dorada: para textos tipo "Reservar" sobre fondos oscuros,
+   mismo hover azul al final */
+.btn-gold {
+  background: transparent;
+  border-color: var(--color-gold);
   color: var(--color-gold-light);
 }
-.btn-outline-gold:hover {
-  border-color: var(--color-gold);
-  color: var(--color-gold);
+.btn-gold:hover,
+.btn-gold:focus-visible {
+  background: var(--color-blue);
+  border-color: var(--color-blue);
+  color: var(--color-white);
 }
+
 /* ==========================================================================
-   Layout helpers (flex, sin grid) usando la escala de spacing fluida
+   Layout helpers (flex, sin grid)
    ========================================================================== */
 
 .section-pad {

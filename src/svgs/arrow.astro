@@ -1,0 +1,35 @@
+---
+// IconArrow.astro
+//
+// Uso dentro de un botón:
+//   <a href="/reservas" class="btn btn-outline">
+//     <IconArrow />
+//     Reservar mesa
+//   </a>
+//
+// Como usa fill="currentColor", el ícono toma el color de texto
+// que tenga en ese momento — si el botón cambia a blanco en hover,
+// la flecha cambia sola, sin tener que tocar nada acá.
+
+interface Props {
+    class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+---
+
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 29 27"
+    width="29"
+    height="27"
+    class={className}
+    aria-hidden="true"
+>
+    <path
+        fill="currentColor"
+        d="M15.134 0h2.523c-1.013 7.988 6.726 12.314 10.719 13.478C17.782 11.881 15.134 3.827 15.134 0ZM28.376 13.478c-3.993 1.166-11.732 5.492-10.72 13.478h-2.522c0-3.827 2.648-11.88 13.242-13.478Z"
+    ></path>
+    <path fill="currentColor" d="M28.376 13.478 0 12.198v3.2l28.375-1.923"></path>
+</svg>
