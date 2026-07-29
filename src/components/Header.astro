@@ -12,15 +12,17 @@ const isHome = Astro.url.pathname === '/';
 
 <header
   id="main-header"
-  class="fixed top-0 left-0 z-50 w-full bg-(--color-cream)/80 backdrop-blur-sm text-black border-b border-(--color-wood)/15 transition-all duration-300 h-20"
+  class="fixed top-0 left-0 z-50 w-full bg-white/80 backdrop-blur-sm text-black border-b border-(--color-wood)/15 transition-all duration-400 h-20"
 >
-  <div class="relative z-50 mx-auto  px-6 h-full flex items-center justify-between">
-    <a href="/" class="flex items-center gap-2">
+  <div class="relative z-50 mx-auto px-5 2xl:px-15 h-full flex items-center justify-between">
+    <!-- Logo -->
+    <a href="/" class="flex items-center gap-2 relative z-50">
       <span class="text-xl md:text-2xl font-serif tracking-[0.2em] font-semibold">
         {site.shortName}
       </span>
     </a>
 
+    <!-- Nav Desktop -->
     <nav class="hidden md:flex items-center gap-10">
       <ul class="flex items-center gap-8 text-xs uppercase tracking-[0.2em] font-medium text-(--color-wood-dark)">
         {links.map((l) => (
@@ -28,7 +30,7 @@ const isHome = Astro.url.pathname === '/';
             <a
               href={l.href}
               data-nav-link={l.id}
-              class="nav-link hover:text-black transition-colors duration-200 py-2 relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-px after:bg-(--color-gold) after:transition-all hover:after:w-full"
+              class="nav-link hover:text-black transition-colors duration-750 ease-[cubic-bezier(0.215,0.61,0.355,1)] py-2 relative after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px after:bg-(--color-gold) after:transition-all after:duration-750 after:ease-[cubic-bezier(0.215,0.61,0.355,1)] hover:after:w-full is-active:after:w-full"
             >
               {l.label}
             </a>
@@ -37,73 +39,103 @@ const isHome = Astro.url.pathname === '/';
       </ul>
       <a
         href="/reservas"
-        class="btn btn-outline"
+        class="btn btn-outline border border-black px-7.5 py-3 text-xs tracking-widest uppercase hover:bg-(--color-gold) hover:border-(--color-gold) hover:text-white transition-all duration-750 ease-[cubic-bezier(0.215,0.61,0.355,1)]"
       >
         Reservar
       </a>
     </nav>
 
+    <!-- Botón Hamburguesa -->
     <button
-      class="md:hidden flex flex-col justify-center items-center w-10 h-10 gap-1.5 focus:outline-none"
+      class="md:hidden flex flex-col justify-center items-center w-10 h-10 gap-1.5 focus:outline-none relative z-50"
+      aria-expanded="false"
+      aria-controls="nav-menu"
       aria-label="Abrir menú"
       id="hamburger-btn"
       type="button"
     >
-      <span class="w-7 h-[1.5px] bg-black transition-all duration-300 origin-center" id="line1"></span>
-      <span class="w-7 h-[1.5px] bg-black transition-all duration-300 origin-center" id="line2"></span>
+      <span class="w-7 h-[1.5px] bg-black transition-transform duration-750 ease-[cubic-bezier(0.215,0.61,0.355,1)] origin-center" id="line1"></span>
+      <span class="w-7 h-[1.5px] bg-black transition-transform duration-750 ease-[cubic-bezier(0.215,0.61,0.355,1)] origin-center" id="line2"></span>
     </button>
   </div>
-
-  <nav
-    id="nav-menu"
-    class="md:hidden fixed inset-0 w-screen h-screen bg-white/95 backdrop-blur-xl z-40 pt-28 pb-10 px-8 flex flex-col justify-between min-[450px]:flex-row min-[450px]:justify-between min-[450px]:items-center"
-  >
-    <ul class="flex flex-col gap-6 text-2xl font-serif text-black">
-      {links.map((l) => (
-        <li><a href={l.href} data-nav-link={l.id} class="mobile-link nav-link">{l.label}</a></li>
-      ))}
-      <li><a href="/reservas" class="mobile-link text-(--color-gold)">Reservar</a></li>
-    </ul>
-    <ul class="flex flex-col gap-4 text-sm font-light text-zinc-600 max-[450px]:self-end mt-12 sm:mt-0">
-      <li><a href={site.social.instagram} class="mobile-link">Instagram</a></li>
-      <li><a href={site.social.facebook} class="mobile-link">Facebook</a></li>
-      <li><a href={site.social.tiktok} class="mobile-link">TikTok</a></li>
-    </ul>
-  </nav>
 </header>
 
+
+<nav
+  id="nav-menu"
+  aria-label="Menú de navegación móvil"
+  class="md:hidden fixed inset-0 w-screen h-dvh bg-white z-40 px-[10vw] pt-25 pb-10 flex flex-col overflow-y-auto overscroll-contain"
+>
+  <!-- Contenedor interno para manejar el flexbox sin romper márgenes -->
+  <div class="flex flex-col flex-1 min-h-full w-full justify-center gap-16 min-[450px]:flex-row min-[450px]:justify-between min-[450px]:items-center min-[450px]:gap-8">
+
+   
+    <ul class="flex flex-col gap-[clamp(20px,4vh,40px)] text-[clamp(28px,4vw,55px)] leading-none font-serif text-black w-full">
+      {links.map((l) => (
+        <li class="nav__item opacity-0 translate-y-8 transition-all duration-750 ease-[cubic-bezier(0.215,0.61,0.355,1)]">
+          <a href={l.href} data-nav-link={l.id} class="mobile-link block w-full">{l.label}</a>
+        </li>
+      ))}
+      <li class="nav__item opacity-0 translate-y-8 transition-all duration-750 ease-[cubic-bezier(0.215,0.61,0.355,1)] mt-4">
+        <a href="/reservas" class="mobile-link text-(--color-gold) block w-full">Reservar</a>
+      </li>
+    </ul>
+
+    <ul class="social-menu opacity-0 translate-y-8 transition-all duration-750 ease-[cubic-bezier(0.215,0.61,0.355,1)] flex flex-col gap-4 text-[clamp(20px,2.25vw,27px)] leading-tight font-light text-zinc-600 max-[450px]:self-end ">
+      <li><a href={site.social.instagram} target="_blank" rel="noopener noreferrer" class="mobile-link hover:text-(--color-gold) transition-colors">Instagram</a></li>
+      <li><a href={site.social.facebook} target="_blank" rel="noopener noreferrer" class="mobile-link hover:text-(--color-gold) transition-colors">Facebook</a></li>
+      <li><a href={site.social.tiktok} target="_blank" rel="noopener noreferrer" class="mobile-link hover:text-(--color-gold) transition-colors">TikTok</a></li>
+    </ul>
+  </div>
+</nav>
+
 <style>
-  /* --- Menú mobile con clip-path (estilo Onyx) ---
-     Nace como un círculo invisible desde el botón hamburguesa
-     (esquina superior derecha) y se expande a pantalla completa.
-     pointer-events lo maneja JS para que sea clickeable recién
-     cuando está totalmente abierto. */
+  /* --- Animación Premium de Entrada (Estilo Onyx) --- */
   #nav-menu {
-    clip-path: circle(1.5rem at calc(100% - 2.75rem) 2.5rem);
+    clip-path: inset(50% 10% 50% 10% round 15%);
     opacity: 0;
-    transition: clip-path 0.6s cubic-bezier(0.65, 0, 0.35, 1),
-      opacity 0.3s ease;
     pointer-events: none;
+    visibility: hidden;
+    transition: clip-path 0.75s cubic-bezier(0.215, 0.61, 0.355, 1),
+                opacity 0.75s cubic-bezier(0.215, 0.61, 0.355, 1),
+                visibility 0.75s cubic-bezier(0.215, 0.61, 0.355, 1);
   }
 
+  /* Estado Abierto (controlado por clase en el nav) */
   #nav-menu.is-open {
-    clip-path: circle(150% at calc(100% - 2.75rem) 2.5rem);
+    clip-path: inset(0 0 0 0 round 0);
     opacity: 1;
     pointer-events: auto;
+    visibility: visible;
+  }
+
+  /* Cascada de animaciones para los links */
+  #nav-menu.is-open .nav__item {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  #nav-menu.is-open .nav__item:nth-child(1) { transition-delay: 0.1s; }
+  #nav-menu.is-open .nav__item:nth-child(2) { transition-delay: 0.15s; }
+  #nav-menu.is-open .nav__item:nth-child(3) { transition-delay: 0.2s; }
+  #nav-menu.is-open .nav__item:nth-child(4) { transition-delay: 0.25s; }
+  #nav-menu.is-open .nav__item:nth-child(5) { transition-delay: 0.3s; }
+
+  #nav-menu.is-open .social-menu {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.4s;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    #nav-menu {
+    #nav-menu, #nav-menu.is-open .nav__item, #nav-menu.is-open .social-menu {
       transition: opacity 0.3s ease;
       clip-path: none;
-      display: none;
-    }
-    #nav-menu.is-open {
-      display: flex;
+      transform: none;
     }
   }
 
-  /* --- Header que se esconde al bajar, reaparece al subir --- */
+  /* --- Header Scroll Behavior --- */
   #main-header {
     transition: transform 0.35s ease, height 0.3s ease, box-shadow 0.3s ease;
   }
@@ -111,7 +143,7 @@ const isHome = Astro.url.pathname === '/';
     transform: translateY(-100%);
   }
 
-  /* --- Link activo del scroll-spy: mismo underline dorado que el hover --- */
+  /* --- Scroll-spy active link --- */
   .nav-link.is-active {
     color: #000;
   }
@@ -122,7 +154,6 @@ const isHome = Astro.url.pathname === '/';
 
 <script>
   const floatingBtn = document.getElementById('floating-reserve');
-
   const header = document.getElementById('main-header');
   const hamburgerBtn = document.getElementById('hamburger-btn');
   const navMenu = document.getElementById('nav-menu');
@@ -130,7 +161,7 @@ const isHome = Astro.url.pathname === '/';
   const line1 = document.getElementById('line1');
   const line2 = document.getElementById('line2');
 
-  /* --- Shrink + hide-on-scroll-down / show-on-scroll-up --- */
+  /* --- Hide-on-scroll logic --- */
   let lastScrollY = window.scrollY;
 
   window.addEventListener('scroll', () => {
@@ -144,39 +175,56 @@ const isHome = Astro.url.pathname === '/';
       header?.classList.remove('shadow-sm', 'h-16');
     }
 
-    // Solo escondemos si bajamos y ya pasamos la altura del propio header
-    if (y > lastScrollY && y > 120) {
-      header?.classList.add('is-hidden');
-    } else {
-      header?.classList.remove('is-hidden');
-    }
-    lastScrollY = y;
+  
   }, { passive: true });
 
-  /* --- Menú mobile con clip-path --- */
+  /* --- Mobile Menu Logic --- */
   if (hamburgerBtn && navMenu) {
+    // Guardamos la posición de scroll para el lock real del body
+    let scrollY = 0;
+
     const close = () => {
       navMenu.classList.remove('is-open');
-      line1?.classList.remove('rotate-45', 'translate-y-[5px]');
-      line2?.classList.remove('-rotate-45', '-translate-y-[5px]');
+      hamburgerBtn.setAttribute('aria-expanded', 'false');
+      // Transforma X -> Hamburguesa
+      line1?.classList.remove('rotate-45', 'translate-y-[3.5px]');
+      line2?.classList.remove('-rotate-45', '-translate-y-[4px]');
+
+      // Restauramos el scroll del body (lock real, no solo overflow-hidden)
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
       document.body.classList.remove('overflow-hidden');
+      window.scrollTo(0, scrollY);
+
       floatingBtn?.classList.remove('is-hidden');
     };
+
     const open = () => {
+      scrollY = window.scrollY;
       navMenu.classList.add('is-open');
-      line1?.classList.add('rotate-45', 'translate-y-[5px]');
-      line2?.classList.add('-rotate-45', '-translate-y-[5px]');
+      hamburgerBtn.setAttribute('aria-expanded', 'true');
+      // Transforma Hamburguesa -> X
+      line1?.classList.add('rotate-45', 'translate-y-[3.5px]');
+      line2?.classList.add('-rotate-45', '-translate-y-[4px]');
+
+      // Fijamos el body en su posición actual para bloquear el scroll de verdad
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
       document.body.classList.add('overflow-hidden');
+
       floatingBtn?.classList.add('is-hidden');
     };
 
     hamburgerBtn.addEventListener('click', () => {
       navMenu.classList.contains('is-open') ? close() : open();
     });
+
     mobileLinks.forEach((link) => link.addEventListener('click', close));
   }
 
-  /* --- Scroll-spy: resalta el link de la sección visible --- */
+  /* --- Scroll-spy --- */
   const sections = document.querySelectorAll('main section[id]');
   const navLinks = document.querySelectorAll('.nav-link');
 

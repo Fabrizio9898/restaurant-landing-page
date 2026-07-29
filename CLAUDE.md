@@ -1,4 +1,15 @@
 <!-- BEGIN:agent-skills-rules -->
+
+# Product Context
+
+Antes de diseñar una feature o proponer cambios de UX/UI, revisá:
+
+skills/product-context/SKILL.md
+
+Ese documento contiene la visión del producto, flujo del usuario y reglas de negocio.
+No asumir que este proyecto representa el sitio tradicional de un restaurante.
+
+
 # Engineering Skills
 
 Este proyecto tiene una carpeta `skills/` con workflows de ingeniería (spec, testing, code review, animaciones/UI, etc).

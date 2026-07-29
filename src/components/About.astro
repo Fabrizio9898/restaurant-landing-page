@@ -24,7 +24,7 @@ const {
 } = Astro.props;
 ---
 
-<section class="video-scroll-section">
+<section class="video-scroll-section" >
     <div class="video-scroll-section__row">
         <!-- Columna A: el video llena el 100% de ESTE div, no de la pantalla -->
         <div class="video-scroll-section__video-col">
@@ -47,10 +47,12 @@ const {
         <!-- Columna B: contenido que scrollea normal -->
         <div class="video-scroll-section__content-col">
           <div>
+
+            <div class="video-scroll-section__img-wrap">
             <figure class="video-scroll-section__figure">
                 <img src={image1} alt="" class="video-scroll-section__img" />
             </figure>
-
+</div>
             <div class="video-scroll-section__text">
                 <h2 class="section-title">{title}</h2>
                 <p>{text}</p>
@@ -60,9 +62,11 @@ const {
 </a>
             </div>
 
+            <div class="video-scroll-section__img-wrap">
             <figure class="video-scroll-section__figure">
                 <img src={image2} alt="" class="video-scroll-section__img" />
             </figure>
+            </div>
             </div>
         </div>
     </div>
@@ -133,6 +137,11 @@ const {
     
 .video-scroll-section__text a{
   margin-bottom: var(--spacing-md);
+}
+.video-scroll-section__img-wrap {
+    width: 100%;
+    aspect-ratio: 4 / 3; /* ajustá vos la proporción que quieras */
+    overflow: hidden;
 }
     /* --- Desktop: fila con dos columnas, video sticky ---
        El sticky queda "contenido": top respeta el padding de la

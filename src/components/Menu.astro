@@ -1,30 +1,323 @@
 ---
-import { site } from '../data/site';
-const featured = site.menu.filter((i) => i.featured);
+// RestaurantMenu.astro
+// Sugerencia SEO: Si este componente es el núcleo de la página, el título principal podría ser un h1. 
+// Aquí usamos h2 asumiendo que el h1 está en el Hero de la landing.
+
+const menuMidi = [
+  {
+    name: "* El Calamar",
+    price: "18 €",
+    desc: "Calamares a la plancha, ensalada de quinoa, apio, pepino, aceitunas negras y salsa bagna cauda."
+  },
+  {
+    name: "Risotto Primavera",
+    price: "16 €",
+    desc: "Risotto cremoso con verduras de temporada, parmesano y un toque de azafrán."
+  },
+  {
+    name: "Ensalada Niçoise",
+    price: "14 €",
+    desc: "Atún, judías verdes, huevos cocidos, tomates, aceitunas y aderezo de mostaza."
+  }
+];
+
+const menuSoir = [
+  {
+    name: "Filete de ternera",
+    price: "48 €",
+    desc: "Filete de ternera Black Angus asado, puré de patatas ahumadas, chalotas confitadas con ajo negro, champiñones, bresaola."
+  },
+  {
+    name: "Magret de Pato",
+    price: "36 €",
+    desc: "Pato glaseado con miel y especias, acompañado de gratén de patatas y salsa de frutos rojos."
+  },
+  {
+    name: "Lubina al Horno",
+    price: "42 €",
+    desc: "Lubina fresca con costra de hierbas, servida con espárragos trigueros y emulsión de limón."
+  }
+];
 ---
 
-<section id="menu" class="section-pad bg-[var(--color-black)] text-[var(--color-cream)]" data-reveal>
-  <div class="section-inner">
-    <p class="section-label">Carta</p>
-    <h2 class="section-title text-[var(--color-cream)]">Platos destacados</h2>
-    <ul class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {featured.map((item) => (
-        <li class="border border-[var(--color-gold)]/25 p-6 hover:border-[var(--color-gold)]/60 transition-colors">
-          <div class="flex items-start justify-between gap-4">
-            <h3 class="font-serif text-xl text-[var(--color-gold-light)]">{item.name}</h3>
-            <span class="text-sm text-[var(--color-gold)] whitespace-nowrap">{item.price}</span>
-          </div>
-          <p class="mt-3 text-sm text-[var(--color-cream)]/70 leading-relaxed">{item.description}</p>
+<section id="menu-section" class="menu-container pt-xl pb-xl">
+  
+  <!-- Columna Izquierda: Contenido y Menú -->
+  <div class="menu-content pr-lg">
+    <header class="menu-header mb-lg">
+      <h2 class="heading-2">Nuestra Carta</h2>
+      <p class="text-body-regular">
+        Las noches de los días especiales se ofrece un menú único. Los demás días, consulte nuestro menú de noche o de mediodía.
+      </p>
+    </header>
+
+    <!-- Navegación de Pestañas (Tabs) -->
+    <nav class="tabs-nav" aria-label="Navegación del menú">
+      <ul class="tabs-list layout-flex" role="tablist">
+        <li role="presentation">
+          <button 
+            class="btn tab-btn active" 
+            id="tab-midi" 
+            role="tab" 
+            aria-controls="panel-midi" 
+            aria-selected="true"
+          >
+            Mediodía
+          </button>
         </li>
-      ))}
-    </ul>
-    <div class="mt-12 text-center">
-      <a
-        href="/menu"
-        class="inline-block border border-[var(--color-gold)]/50 px-8 py-3 text-xs uppercase tracking-[0.25em] text-[var(--color-gold-light)] transition-all duration-300 hover:border-[var(--color-gold)] hover:text-[var(--color-gold)]"
-      >
-        Ver carta completa
-      </a>
+        <li role="presentation">
+          <button 
+            class="btn tab-btn" 
+            id="tab-soir" 
+            role="tab" 
+            aria-controls="panel-soir" 
+            aria-selected="false"
+          >
+            Noche
+          </button>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Contenido de las Pestañas -->
+    <div class="tabs-content-wrapper">
+      
+      <!-- Panel: Mediodía -->
+      <article id="panel-midi" class="tab-panel active" role="tabpanel" aria-labelledby="tab-midi">
+        <h3 class="heading-3">Menú de mediodía</h3>
+        
+        <div class="menu-category mb-lg">
+          <h4 class="heading-4">Entradas</h4>
+          <ul class="dish-list layout-flex -column">
+            {menuMidi.map((dish) => (
+              <li class="dish-item reveal-scroll">
+                <div class="dish-header layout-flex -between -middle">
+                  <h5 class="dish-name">{dish.name}</h5>
+                  <span class="dish-price">{dish.price}</span>
+                </div>
+                <p class="dish-desc text-body-small">{dish.desc}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </article>
+
+      <!-- Panel: Noche (Oculto por defecto) -->
+      <article id="panel-soir" class="tab-panel" role="tabpanel" aria-labelledby="tab-soir" hidden>
+        <h3 class="heading-3">Menú de noche</h3>
+        <p class="text-body-small mb-md"><em>(Sólo por las tardes, excepto en días especiales)</em></p>
+        
+        <div class="menu-category mb-lg">
+          <h4 class="heading-4">Platos Principales</h4>
+          <ul class="dish-list layout-flex -column">
+            {menuSoir.map((dish) => (
+              <li class="dish-item reveal-scroll">
+                <div class="dish-header layout-flex -between -middle">
+                  <h5 class="dish-name">{dish.name}</h5>
+                  <span class="dish-price">{dish.price}</span>
+                </div>
+                <p class="dish-desc text-body-small">{dish.desc}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </article>
+      
+      <div class="cta-wrapper mt-lg">
+        <a href="/reservas" class="btn">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 29 27" width="24" height="24" class="mr-xs" aria-hidden="true">
+            <path fill="currentColor" d="M15.134 0h2.523c-1.013 7.988 6.726 12.314 10.719 13.478C17.782 11.881 15.134 3.827 15.134 0ZM28.376 13.478c-3.993 1.166-11.732 5.492-10.72 13.478h-2.522c0-3.827 2.648-11.88 13.242-13.478Z"></path>
+            <path fill="currentColor" d="M28.376 13.478 0 12.198v3.2l28.375-1.923"></path>
+          </svg>
+          Reserva ahora y elige tus platos con descuento.
+        </a>
+      </div>
     </div>
   </div>
+
+  <!-- Columna Derecha: Imágenes Sticky -->
+  <aside class="menu-media sticky">
+    <figure class="image-wrapper ratio-3_4 active" id="img-midi">
+      <!-- SEO: Alt descriptivo y loading lazy por defecto debajo del fold -->
+      <img 
+        src="/photos/plato2.webp" 
+        alt="Platillo de calamares a la plancha servido en el menú de mediodía" 
+        loading="lazy"
+        width="800"
+        height="1066"
+        class="img-cover"
+      />
+    </figure>
+    <figure class="image-wrapper ratio-3_4" id="img-soir" hidden>
+      <img 
+        src="/photos/plato1.webp" 
+        alt="Filete de ternera Black Angus asado servido en el menú de noche" 
+        loading="lazy"
+        width="800"
+        height="1066"
+        class="img-cover"
+      />
+    </figure>
+  </aside>
 </section>
+
+<style>
+  /* =========================================
+     ESTILOS DEL COMPONENTE (Flexbox)
+     La mayoría de variables se heredan de global.css
+     ========================================= */
+  .menu-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding-inline: var(--spacing-sm);
+  }
+
+  /* Lógica Responsive con Flexbox */
+  @media (min-width: 1000px) {
+    .menu-container {
+      flex-direction: row;
+      align-items: flex-start;
+      padding-inline: var(--spacing-md);
+    }
+    .menu-content {
+      flex: 1 1 55%;
+      max-width: 55%;
+    }
+    .menu-media {
+      flex: 1 1 45%;
+      max-width: 45%;
+      position: sticky;
+      top: 100px; 
+    }
+  }
+
+  /* Utilidades Flex compartidas */
+  .layout-flex { display: flex; list-style: none; padding: 0; margin: 0; }
+  .layout-flex.-column { flex-direction: column; }
+  .layout-flex.-between { justify-content: space-between; }
+  .layout-flex.-middle { align-items: center; }
+
+  /* Tipografía (Usa las vars globales) */
+  .heading-2, .heading-3, .heading-4, .dish-name {
+    font-family: var(--font-serif);
+    color: var(--color-blue);
+    font-weight: 500;
+    line-height: 1.1;
+    margin-bottom: var(--spacing-sm);
+  }
+  .heading-2 { font-size: var(--font-size-h2); }
+  .heading-3 { font-size: var(--font-size-h3); }
+  .heading-4 { font-size: var(--font-size-h4); }
+  
+  .text-body-regular { font-size: var(--font-size-body); font-family: var(--font-sans); }
+  .text-body-small { font-size: var(--font-size-body-sm); font-family: var(--font-sans); color: var(--color-gray-500); }
+
+  /* Pestañas (Tabs) */
+  .tabs-nav {
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.8);
+    position: sticky;
+    top: 70px;
+    z-index: 10;
+    padding-block: var(--spacing-xs);
+    border-bottom: 1px solid var(--border-light);
+  }
+  .tabs-list { gap: var(--spacing-sm);  align-items: center;
+display: flex;
+justify-content: center;}
+
+  /* Estado ACTIVO del Botón de Pestañas */
+  .tab-btn.active {
+    background: var(--color-blue);
+    border-color: var(--color-blue);
+    color: var(--color-white);
+  }
+  
+  /* Lista de Platos */
+  .dish-list { gap: var(--spacing-sm);
+ }
+  .dish-item {
+    border-bottom: 1px dashed var(--border-light);
+    padding-bottom: var(--spacing-sm);
+  }
+  .dish-name { font-size: 1.25rem; margin-bottom: 0; font-family: var(--font-sans); font-weight: 500;}
+  .dish-price {
+    color: var(--color-gold);
+    font-size: 1.125rem;
+    font-weight: 500;
+  }
+  .dish-desc { margin-top: 8px; max-width: 85%; }
+
+  /* Media & Imágenes */
+  .ratio-3_4 {
+    aspect-ratio: 3/4;
+    overflow: hidden;
+    width: 100%;
+    border-radius: 4px;
+  }
+  .img-cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.75s ease, transform 0.75s ease;
+  }
+
+  /* Animación de entrada simulada */
+  .reveal-scroll {
+    animation: fadeInUp 0.9s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
+  }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  
+  /* Utils de spacing */
+  .mt-lg { margin-top: var(--spacing-lg); }
+  .mb-md { margin-bottom: var(--spacing-md); }
+  .mb-lg { margin-bottom: var(--spacing-lg); }
+  .pr-lg { padding-right: var(--spacing-lg); }
+  .pt-xl { padding-top: var(--spacing-xl); }
+  .pb-xl { padding-bottom: var(--spacing-xl); }
+  .mr-xs { margin-right: var(--spacing-xs); }
+</style>
+
+<script>
+  const setupTabs = () => {
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabPanels = document.querySelectorAll('.tab-panel');
+    const images = document.querySelectorAll('.image-wrapper');
+
+    if (!tabBtns.length) return; 
+
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        tabBtns.forEach(b => {
+          b.classList.remove('active');
+          b.setAttribute('aria-selected', 'false');
+        });
+        tabPanels.forEach(p => (p as HTMLElement).hidden = true);
+        images.forEach(img => (img as HTMLElement).hidden = true);
+
+        btn.classList.add('active');
+        btn.setAttribute('aria-selected', 'true');
+        
+        const targetId = btn.getAttribute('aria-controls');
+        if (targetId) {
+          const targetPanel = document.getElementById(targetId);
+          if (targetPanel) (targetPanel as HTMLElement).hidden = false;
+          
+          const imgId = targetId.replace('panel-', 'img-');
+          const targetImg = document.getElementById(imgId);
+          if (targetImg) (targetImg as HTMLElement).hidden = false;
+        }
+      });
+    });
+  }
+
+  setupTabs();
+  document.addEventListener('astro:page-load', setupTabs);
+</script>

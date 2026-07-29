@@ -1,0 +1,229 @@
+---
+// WelcomeHero.astro
+// Estructura visual adaptada del bloque "Welcome" (sin animaciones de scroll/reveal)
+
+export interface Props {
+  title?: string;
+  description?: string;
+  ctaText?: string;
+  ctaHref?: string;
+  imageSrc?: string;
+  imageAlt?: string;
+}
+
+const {
+  title = "Bienvenidos a nuestro restaurante",
+  description = "lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+  ctaText = "Descubre el restaurante",
+  ctaHref = "#",
+  imageSrc = "/photos/discoverPhoto.avif",
+  imageAlt = "Detalle del interior",
+} = Astro.props;
+---
+
+<section id="gallery" class="welcome-hero  bg-onyx-left">
+  <div class="welcome-hero__grid">
+    <h2 class="welcome-hero__title">{title}</h2>
+
+    <div class="welcome-hero__content">
+      <p class="welcome-hero__text">{description}</p>
+      <a href={ctaHref} class="welcome-hero__btn">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 29 27"
+          width="29"
+          height="27"
+          class="welcome-hero__btn-icon"
+        >
+          <path
+            fill="currentColor"
+            d="M15.134 0h2.523c-1.013 7.988 6.726 12.314 10.719 13.478C17.782 11.881 15.134 3.827 15.134 0ZM28.376 13.478c-3.993 1.166-11.732 5.492-10.72 13.478h-2.522c0-3.827 2.648-11.88 13.242-13.478Z"
+          ></path>
+          <path fill="currentColor" d="M28.376 13.478 0 12.198v3.2l28.375-1.923"></path>
+        </svg>
+        <span>{ctaText}</span>
+      </a>
+    </div>
+
+    <div class="welcome-hero__media">
+      <figure class="welcome-hero__figure">
+        <img
+          src={imageSrc}
+          alt={imageAlt}
+          class="welcome-hero__img"
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
+    </div>
+  </div>
+</section>
+
+<style>
+  .welcome-hero {
+    padding-block: 4rem;
+  }
+
+  .welcome-hero__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    align-items: center;
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+     background-repeat: no-repeat;
+  background-position: 0 0;
+  background-size: 47.5% auto;
+  background-image: url('../assets/fondo.webp');
+  }
+
+  @media (min-width: 1000px) {
+    .welcome-hero__grid {
+      grid-template-columns: repeat(12, 1fr);
+      column-gap: 1.25rem;
+    }
+  }
+@media (max-width: 999px) {
+  .welcome-hero {
+    background-size: 75% auto; /* como en el original en mobile */
+  }
+}
+
+/* asegurate que el contenido quede arriba del fondo */
+.welcome-hero__grid {
+  position: relative;
+  z-index: 1;
+}
+  .welcome-hero__title {
+    font-family: serif;
+    font-weight: 400;
+    font-size: clamp(1.75rem, 3vw, 3.5rem);
+    line-height: 1.1;
+    text-align: center;
+    margin-bottom: var(--spacing-md);
+  }
+
+  @media (min-width: 1000px) {
+    .welcome-hero__title {
+      grid-column: 1 / -1;
+    }
+  }
+
+  .welcome-hero__content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  @media (min-width: 1000px) {
+    .welcome-hero__content {
+      grid-column: 1 / 5;
+    }
+  }
+
+  .welcome-hero__text {
+    line-height: 1.5;
+    max-width: 60ch;
+    margin-bottom: var(--spacing-md);
+  }
+
+  .welcome-hero__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    align-self: flex-start;
+    border: 1px solid currentColor;
+    padding: 0.9rem 1.6rem;
+    text-decoration: none;
+    color: inherit;
+    font-family: serif;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  .welcome-hero__btn:hover {
+    background: currentColor;
+  }
+
+  .welcome-hero__btn:hover span,
+  .welcome-hero__btn:hover .welcome-hero__btn-icon {
+    color: #fff;
+  }
+
+  .welcome-hero__btn-icon {
+    flex-shrink: 0;
+  }
+
+  .welcome-hero__media {
+    width: 100%;
+  }
+
+  @media (min-width: 1000px) {
+    .welcome-hero__media {
+      grid-column: 6 / 13;
+    }
+  }
+
+  .welcome-hero__figure {
+    margin: 0;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+  }
+
+.welcome-hero__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    
+    /* Empieza más grande */
+    transform: scale(1.15); 
+    transform-origin: center center;
+    /* Transición suave para que el efecto no se vea cortado al scrollear */
+    transition: transform 0.1s ease-out; 
+    will-change: transform;
+  }
+
+ 
+</style>
+
+<script>
+  // En Astro, los scripts dentro de etiquetas <script> se ejecutan en el cliente automáticamente.
+  const setupZoomEffect = () => {
+    const img = document.querySelector('.welcome-hero__img') as HTMLElement;
+    if (!img) return;
+
+    const handleScroll = () => {
+      const rect = img.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+
+      // Verificamos si la imagen está visible en el viewport
+      if (rect.top <= windowHeight && rect.bottom >= 0) {
+        // Calculamos qué porcentaje de la imagen ha entrado en la pantalla
+        const progress = 1 - (rect.top / windowHeight);
+        
+        // Ajustamos la escala: empieza en 1.15 y baja hasta 1.0
+        let currentScale = 1.15 - (0.15 * progress);
+        
+        // Evitamos que se achique a menos de 1 o se agrande a más de 1.15
+        currentScale = Math.max(1, Math.min(1.15, currentScale));
+        
+        // Aplicamos el tamaño
+        img.style.transform = `scale(${currentScale})`;
+      }
+    };
+
+    // Escuchamos el scroll
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    // Lo ejecutamos una vez al inicio por si el usuario recarga la página a mitad del scroll
+    handleScroll();
+  };
+
+  // Inicializamos el efecto
+  setupZoomEffect();
+
+  // Si en el futuro usas ViewTransitions de Astro, esto asegura que el script se vuelva a cargar al cambiar de página:
+  document.addEventListener('astro:page-load', setupZoomEffect);
+</script>
