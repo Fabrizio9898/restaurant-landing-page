@@ -2,22 +2,81 @@
 import { site } from '../data/site';
 ---
 
-<a
-  id="floating-reserve"
-  href="/reservas"
-  class="btn btn-primary shadow-lg"
-  aria-label="Reservar mesa"
->
-  Reservar
-</a>
+<!-- Contenedor envolvente fijo al fondo -->
+<div id="floating-reserve-container" class="floating-wrapper">
+  <a
+    id="floating-reserve"
+    href="/reservas"
+    class="btn-reserve"
+    aria-label="Reservar mesa"
+  >
+    Reservar
+  </a>
+</div>
+
+<style>
+  /* =========================================
+     Mobile-first Base
+     ========================================= */
+  .floating-wrapper {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    z-index: 50; /* Asegura que quede por encima del resto del contenido */
+    transition: opacity 0.7s cubic-bezier(0.215, 0.61, 0.355, 1), transform 0.7s ease; /* Transición fluida extraída del sitio original */
+  }
+
+  /* Estado oculto controlado por el Intersection Observer */
+  .floating-wrapper.is-hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(100%);
+  }
+
+  .btn-reserve {
+    display: block;
+    width: 100%; /* En mobile ocupa todo el ancho de la pantalla */
+    padding: var(--spacing, 15px); /* Aprovecha las variables de tu global.css */
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: 400;
+    color: #fff;
+    text-decoration: none;
+    
+    /* El fondo rojo transparente y el blur del CSS de referencia */
+    background: #dc3d35b3; 
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+  }
+
+  /* =========================================
+     Desktop (Tablets y Pantallas grandes)
+     ========================================= */
+  @media (min-width: 1000px) {
+    .floating-wrapper {
+      padding-bottom: calc(var(--vr, 1px) * 20); /* Padding inferior en desktop */
+    }
+
+    .btn-reserve {
+      width: auto;
+      min-width: 280px; /* Ancho fijo mínimo en pantallas grandes */
+    }
+  }
+</style>
 
 <script>
-  const btn = document.getElementById('floating-reserve');
+  // Seleccionamos el contenedor padre en lugar del botón directo
+  const wrapper = document.getElementById('floating-reserve-container');
   const section = document.getElementById('reservas');
-  if (btn && section) {
+
+  if (wrapper && section) {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        btn.classList.toggle('is-hidden', entry.isIntersecting);
+        // Ocultamos el contenedor entero si la sección de reservas está visible
+        wrapper.classList.toggle('is-hidden', entry.isIntersecting);
       },
       { threshold: 0.4 }
     );
