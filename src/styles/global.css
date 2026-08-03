@@ -8,12 +8,12 @@
   --color-white: #ffffff;
   --color-cream: #f7f3eb;
 
-  --color-blue: #0c1e30;        /* azul principal — hover de botones, acentos fuertes */
-  --color-blue-light: #1e3a54;  /* variante más clara, para textos secundarios/bordes */
-  --color-blue-dark: #08141f;   /* variante más oscura, por si hace falta más contraste */
+  --color-blue: #0c1e30; /* azul principal — hover de botones, acentos fuertes */
+  --color-blue-light: #1e3a54; /* variante más clara, para textos secundarios/bordes */
+  --color-blue-dark: #08141f; /* variante más oscura, por si hace falta más contraste */
 
-  --color-gold: #dcba92;        /* acento dorado, se mantiene como detalle sutil */
-  --color-gold-light:  #edce9f;
+  --color-gold: #dcba92; /* acento dorado, se mantiene como detalle sutil */
+  --color-gold-light: #edce9f;
 
   --color-gray-100: #f5f5f5;
   --color-gray-200: #e5e5e5;
@@ -63,13 +63,13 @@
 
   /* --- Escala tipográfica fluida --- */
   --font-size-body: clamp(1rem, 0.8rem + 1vw, 1.25rem);
---font-size-body-lg: clamp(1.5rem, 1.15rem + 1.5vw, 1.75rem);
---font-size-body-sm: clamp(0.875rem, 0.8rem + 0.3vw, 0.9375rem);
---font-size-h1: clamp(2.625rem, 1.6rem + 4vw, 5rem);
---font-size-h2: clamp(2.25rem, 1.4rem + 3.5vw, 4.375rem);
---font-size-h3: clamp(1.75rem, 1.15rem + 2.5vw, 3.4375rem);
---font-size-h4: clamp(1.375rem, 1rem + 1.5vw, 2.5rem);
---tracking-body: 0.1em;
+  --font-size-body-lg: clamp(1.5rem, 1.15rem + 1.5vw, 1.75rem);
+  --font-size-body-sm: clamp(0.875rem, 0.8rem + 0.3vw, 0.9375rem);
+  --font-size-h1: clamp(2.625rem, 1.6rem + 4vw, 5rem);
+  --font-size-h2: clamp(2.25rem, 1.4rem + 3.5vw, 4.375rem);
+  --font-size-h3: clamp(1.75rem, 1.15rem + 2.5vw, 3.4375rem);
+  --font-size-h4: clamp(1.375rem, 1rem + 1.5vw, 2.5rem);
+  --tracking-body: 0.1em;
 
   --tracking-label: 0.2em;
 }
@@ -83,6 +83,19 @@ html {
   scroll-behavior: smooth;
 }
 
+html,
+body {
+  overflow-x: clip;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  display: block;
+}
+
+
+
 body {
   background: #ffffff;
   color: var(--color-black);
@@ -94,7 +107,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
   font-family: var(--font-serif);
   font-weight: 500;
   letter-spacing: 0;
@@ -122,7 +138,10 @@ h1, h2, h3, h4 {
   background: var(--color-white);
   color: var(--color-black);
   cursor: pointer;
-  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  transition:
+    background 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease;
 }
 
 .btn:hover,
@@ -194,7 +213,9 @@ h1, h2, h3, h4 {
 [data-reveal] {
   opacity: 0;
   transform: translateY(30px);
-  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  transition:
+    opacity 0.6s ease-out,
+    transform 0.6s ease-out;
   will-change: opacity, transform;
 }
 [data-reveal].is-visible {
@@ -222,7 +243,9 @@ h1, h2, h3, h4 {
   z-index: 999;
   opacity: 1;
   pointer-events: auto;
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
 }
 #floating-reserve.is-hidden {
   opacity: 0;

@@ -1,27 +1,64 @@
-<!-- BEGIN:agent-skills-rules -->
+# AGENT.md
 
-# Product Context
+## Project
 
-Antes de diseñar una feature o proponer cambios de UX/UI, revisá:
+Official restaurant website. It looks like a landing page but should be treated as a product-oriented web app.
 
-skills/product-context/SKILL.md
+Core purpose:
+- Showcase the restaurant
+- Display the menu
+- Handle table reservations
+- Allow discounted pre-orders during booking
 
-Ese documento contiene la visión del producto, flujo del usuario y reglas de negocio.
-No asumir que este proyecto representa el sitio tradicional de un restaurante.
+Goal: improve customer experience before arrival and streamline restaurant operations.
 
+## Tech Stack
 
-# Engineering Skills
+- Astro
+- TypeScript
+- Tailwind CSS
+- CSS Modules (when needed)
 
-Este proyecto tiene una carpeta `skills/` con workflows de ingeniería (spec, testing, code review, animaciones/UI, etc).
+## Code Principles
 
-Cuando el pedido implique una feature nueva o cambio de código:
-1. Antes de codear, revisá `skills/spec-driven-development/SKILL.md` para definir el alcance.
-2. Rompé el trabajo en tareas chicas usando `skills/planning-and-task-breakdown/SKILL.md`.
-3. Implementá de forma incremental con `skills/incremental-implementation/SKILL.md`.
-4. Para UI, componentes y animaciones, seguí `skills/frontend-ui-engineering/SKILL.md`.
-5. Antes de dar por terminado, pasá por `skills/code-review-and-quality/SKILL.md`.
+- Respect the existing architecture.
+- Build small, reusable, typed components.
+- Keep components focused on a single responsibility.
+- Write clean, maintainable code.
+- Do not introduce unnecessary complexity.
 
-Si el pedido es un bug o algo roto, usá `skills/debugging-and-error-recovery/SKILL.md`.
+## Project Structure
 
-No asumas que un skill aplica sin mirar su SKILL.md primero.
-<!-- END:agent-skills-rules -->
+Use and preserve the existing structure:
+
+- layouts
+- pages
+- components
+- ui
+- sections
+- hooks
+- services
+- utils
+- types
+
+## UI & UX
+
+- Do not invent features or business logic.
+- Only implement what is requested.
+- Prioritize clear UX, responsive layouts, and visual consistency.
+- When designing a page, first define the layout and user flow, then build the requested components.
+
+## Backend
+
+- Assume data comes from an API.
+- Keep UI and business logic separated.
+- Avoid hardcoded data unless explicitly requested.
+- Use services/adapters for data access.
+
+## Behavior
+
+- Do not modify project architecture unless requested.
+- Do not add dependencies without justification.
+- Do not create unnecessary files.
+- Do not change global styles unless requested.
+- If information is missing, choose the simplest scalable solution.

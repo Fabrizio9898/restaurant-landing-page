@@ -1,6 +1,6 @@
 ---
 import { site } from '../data/site';
-
+import Logo from '../assets/logo.svg';
 const links = [
   { href: '/#about', label: 'Sobre nosotros', id: 'about' },
   { href: '/galeria-fotos', label: 'Galería', id: 'galeria' },
@@ -16,38 +16,31 @@ const isHome = Astro.url.pathname === '/';
 >
   <div class="relative z-50 mx-auto px-5 2xl:px-15 h-full flex items-center justify-between">
     <!-- Logo -->
-    <a href="/" class="flex items-center gap-2 relative z-50">
-      <span class="text-xl md:text-2xl font-serif tracking-[0.2em] font-semibold">
-        {site.shortName}
-      </span>
-    </a>
+ <a href="/" class="flex items-center gap-2 relative z-50 shrink-0" aria-label={site.shortName}>
+  <Logo class="h-10 md:h-14 w-auto text-black fill-current" />
+</a>
 
     <!-- Nav Desktop -->
-    <nav class="hidden md:flex items-center gap-10">
+    <nav class="hidden lg:flex items-center gap-10">
       <ul class="flex items-center gap-8 text-xs uppercase tracking-[0.2em] font-medium text-(--color-wood-dark)">
         {links.map((l) => (
           <li>
             <a
               href={l.href}
               data-nav-link={l.id}
-              class="nav-link hover:text-black transition-colors duration-750 ease-[cubic-bezier(0.215,0.61,0.355,1)] py-2 relative after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px after:bg-(--color-gold) after:transition-all after:duration-750 after:ease-[cubic-bezier(0.215,0.61,0.355,1)] hover:after:w-full is-active:after:w-full"
+              class="nav-link whitespace-nowrap hover:text-black transition-colors duration-750 ease-[cubic-bezier(0.215,0.61,0.355,1)] py-2 relative after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px after:bg-(--color-gold) after:transition-all after:duration-750 after:ease-[cubic-bezier(0.215,0.61,0.355,1)] hover:after:w-full is-active:after:w-full"
             >
               {l.label}
             </a>
           </li>
         ))}
       </ul>
-      <a
-        href="/reservas"
-        class="btn btn-outline border border-black px-7.5 py-3 text-xs tracking-widest uppercase hover:bg-(--color-gold) hover:border-(--color-gold) hover:text-white transition-all duration-750 ease-[cubic-bezier(0.215,0.61,0.355,1)]"
-      >
-        Reservar
-      </a>
+     
     </nav>
 
     <!-- Botón Hamburguesa -->
     <button
-      class="md:hidden flex flex-col justify-center items-center w-10 h-10 gap-1.5 focus:outline-none relative z-50"
+      class="lg:hidden flex flex-col justify-center items-center w-10 h-10 gap-1.5 focus:outline-none relative z-50"
       aria-expanded="false"
       aria-controls="nav-menu"
       aria-label="Abrir menú"
@@ -64,7 +57,7 @@ const isHome = Astro.url.pathname === '/';
 <nav
   id="nav-menu"
   aria-label="Menú de navegación móvil"
-  class="md:hidden fixed inset-0 w-screen h-dvh bg-white z-40 px-[10vw] pt-25 pb-10 flex flex-col overflow-y-auto overscroll-contain"
+  class="lg:hidden fixed inset-0 w-full h-dvh bg-white z-40 px-[10vw] pt-25 pb-10 flex flex-col overflow-y-auto overscroll-contain"
 >
   <!-- Contenedor interno para manejar el flexbox sin romper márgenes -->
   <div class="flex flex-col flex-1 min-h-full w-full justify-center gap-16 min-[450px]:flex-row min-[450px]:justify-between min-[450px]:items-center min-[450px]:gap-8">
