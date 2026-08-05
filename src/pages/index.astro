@@ -9,6 +9,8 @@ import Location from '../components/Location.astro';
 import Reservas from '../components/Reservas.astro';
 import Footer from '../components/Footer.astro';
 import FloatingReserve from '../components/FloatingReserve.astro';
+import ScrollAnimation from '../components/ScrollAnimation.astro';
+import VipAndResto from '../components/VipAndResto.astro'
 ---
 
 <Layout>
@@ -27,8 +29,10 @@ import FloatingReserve from '../components/FloatingReserve.astro';
 		<Discover />
 
   <Menu />
+  <ScrollAnimation />
+          <VipAndResto />
+
 		<Location />
-		<Reservas />
 	</main>
 	<Footer />
 	<FloatingReserve />

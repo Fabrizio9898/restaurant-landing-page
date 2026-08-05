@@ -27,8 +27,8 @@ const {
 
     <div class="welcome-hero__content">
       <p class="welcome-hero__text">{description}</p>
-      <a href={ctaHref} class="welcome-hero__btn">
-        <svg
+<a href={ctaHref} class="custom-btn group inline-flex items-center justify-center gap-3 border border-current px-6 py-4 text-xs font-medium uppercase tracking-widest transition-all duration-300">
+          <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 29 27"
@@ -64,7 +64,19 @@ const {
   .welcome-hero {
     padding-block: 4rem;
   }
+.custom-btn {
+  align-self: flex-start; /* Evita que ocupe todo el ancho estirándose */
+  background: var(--color-white);
+  color: var(--color-black);
+  border-color: var(--color-black);
+  text-decoration: none;
+}
 
+.custom-btn:hover {
+  background: var(--color-blue);
+  border-color: var(--color-blue);
+  color: var(--color-white);
+}
   .welcome-hero__grid {
     display: grid;
     grid-template-columns: 1fr;

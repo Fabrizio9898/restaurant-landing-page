@@ -1,0 +1,27 @@
+---
+// Paso 4: pago. Punto de integración de Mercado Pago.
+// Hasta que exista la integración, el pago se simula con éxito.
+---
+
+<div class="rv-payment">
+	<p class="rv-step-label">Paso 4 · Pago</p>
+	<h2>Pago</h2>
+
+	<p>
+		Total a pagar: <strong id="rv-pay-amount">—</strong>
+	</p>
+
+	<!-- TODO(mp): aquí se renderiza el widget de Mercado Pago (Payment Brick)
+	     o se redirige al Checkout Pro antes de confirmar la reserva. -->
+	<div class="rv-mp-placeholder">
+		Integración de Mercado Pago pendiente. El pago se simulará con éxito hasta entonces.
+	</div>
+
+	<p id="rv-pay-status" role="status" hidden>Procesando pago…</p>
+	<p id="rv-pay-error" role="alert" hidden></p>
+
+	<div class="rv-actions">
+		<button type="button" data-action="back-to-summary">Atrás</button>
+		<button type="button" id="rv-pay-button" data-action="pay">Pagar y reservar</button>
+	</div>
+</div>

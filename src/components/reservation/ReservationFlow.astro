@@ -1,0 +1,41 @@
+---
+// Orquestador del flujo de reserva.
+// Estructura estática por paso; la interactividad vive en reservationFlow.ts.
+import ReservationForm from './ReservationForm.astro';
+import DishSelection from './DishSelection.astro';
+import ReservationSummary from './ReservationSummary.astro';
+import PaymentStep from './PaymentStep.astro';
+import ReservationResult from './ReservationResult.astro';
+import { RESERVATION_DISCOUNT } from '../../utils/pricing';
+
+const discountPercent = Math.round(RESERVATION_DISCOUNT * 100);
+---
+
+<section data-reservation-flow>
+	<div data-step="details">
+		<ReservationForm />
+	</div>
+
+	<div data-step="dishes" hidden>
+		<DishSelection discountPercent={discountPercent} />
+	</div>
+
+	<div data-step="summary" hidden>
+		<ReservationSummary discountPercent={discountPercent} />
+	</div>
+
+	<div data-step="payment" hidden>
+		<PaymentStep />
+	</div>
+
+	<div data-step="result" hidden>
+		<ReservationResult />
+	</div>
+</section>
+
+<script>
+	import { initReservationFlow } from './reservationFlow';
+
+	const root = document.querySelector<HTMLElement>('[data-reservation-flow]');
+	if (root) initReservationFlow(root);
+</script>
