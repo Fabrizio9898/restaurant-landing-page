@@ -55,10 +55,19 @@ Use and preserve the existing structure:
 - Avoid hardcoded data unless explicitly requested.
 - Use services/adapters for data access.
 
-## Behavior
+## Agent Skills
 
-- Do not modify project architecture unless requested.
-- Do not add dependencies without justification.
-- Do not create unnecessary files.
-- Do not change global styles unless requested.
-- If information is missing, choose the simplest scalable solution.
+This project uses installed skills.
+
+Before implementing a feature:
+
+1. Check available skills.
+2. Load any skill relevant to the task.
+3. Follow skill instructions together with this AGENTS.md.
+
+Relevant examples:
+
+- UI pages → frontend-design, accessibility
+- Astro components → astro
+- Styling → tailwind-css-patterns
+- Type modeling → typescript-advanced-types
