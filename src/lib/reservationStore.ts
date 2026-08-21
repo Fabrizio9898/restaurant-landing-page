@@ -1,183 +1,230 @@
-// Store del flujo de reserva: única fuente de verdad del estado en el cliente.
-// La UI (reservationFlow.ts) solo se suscribe y dispara acciones.
-import { computeTotals } from '../utils/pricing';
-import { createPaymentIntent } from '../services/paymentService';
-import { fetchMenu } from '../services/menuService';
-import { submitReservation } from '../services/reservationService';
 import type {
-	CustomerInfo,
-	Dish,
+	FlowStep,
 	ReservationDraft,
-	ReservationRequest,
-	ReservationResult,
-	Selection,
-	Step,
-	Totals,
+	CustomerInfo,
+	Zone,
+	AvailabilitySlot,
+	MenuItem,
+	MenuCategory,
+	CartItem,
+	CartTotals,
+	ReservationResponse,
+	PaymentStatus,
 } from '../types/reservation';
+import { computeCartTotals, RESERVATION_DISCOUNT } from '../utils/pricing';
+import {
+	fetchZones,
+	fetchAvailability,
+	submitReservation,
+	fetchMenuCategories,
+	fetchMenuItems,
+} from '../services/reservationService';
+import { validateStep1 } from '../utils/validation';
 
-export interface MenuState {
-	dishes: Dish[];
-	loading: boolean;
-	error: string | null;
-}
-
-export interface ReservationState {
-	step: Step;
-	menu: MenuState;
+export interface FlowState {
+	step: FlowStep;
+	zones: Zone[];
+	availability: Map<string, AvailabilitySlot[]>;
+	loadingAvailability: boolean;
 	draft: ReservationDraft;
-	selections: Selection[];
-	totals: Totals;
-	paymentStatus: 'idle' | 'processing' | 'paid';
-	paymentError: string | null;
-	submissionStatus: 'idle' | 'submitting' | 'success' | 'error';
-	submissionError: string | null;
-	lastReservation: ReservationResult | null;
+	customer: CustomerInfo;
+	step1Errors: Record<string, string>;
+	choseMenu: boolean | null;
+	categories: MenuCategory[];
+	menuItems: MenuItem[];
+	menuLoading: boolean;
+	activeCategoryId: string | null;
+	cart: CartItem[];
+	cartTotals: CartTotals;
+	submitting: boolean;
+	submitError: string | null;
+	paymentStatus: PaymentStatus;
+	reservationId: string | null;
 }
 
-const initialState = (): ReservationState => ({
-	step: 'details',
-	menu: { dishes: [], loading: false, error: null },
-	draft: { date: '', time: '', partySize: 2, customer: { name: '', phone: '', email: '' } },
-	selections: [],
-	totals: { subtotal: 0, discount: 0, total: 0 },
+const initialState = (): FlowState => ({
+	step: 'step1',
+	zones: [],
+	availability: new Map(),
+	loadingAvailability: false,
+	draft: { date: '', partySize: 2, zoneId: '', timeSlot: '' },
+	customer: { name: '', phone: '', email: '' },
+	step1Errors: {},
+	choseMenu: null,
+	categories: [],
+	menuItems: [],
+	menuLoading: false,
+	activeCategoryId: null,
+	cart: [],
+	cartTotals: { subtotal: 0, discount: 0, total: 0 },
+	submitting: false,
+	submitError: null,
 	paymentStatus: 'idle',
-	paymentError: null,
-	submissionStatus: 'idle',
-	submissionError: null,
-	lastReservation: null,
+	reservationId: null,
 });
 
-type Listener = (state: ReservationState) => void;
+type Listener = (state: FlowState) => void;
 
-const errorMessage = (err: unknown, fallback: string): string =>
-	err instanceof Error ? err.message : fallback;
+const errMsg = (err: unknown, fb: string) => err instanceof Error ? err.message : fb;
 
 export class ReservationStore {
-	private state: ReservationState = initialState();
+	private state: FlowState = initialState();
 	private listeners = new Set<Listener>();
 
-	getState(): ReservationState {
-		return this.state;
+	getState(): FlowState { return this.state; }
+
+	subscribe(fn: Listener) {
+		this.listeners.add(fn);
+		return () => this.listeners.delete(fn);
 	}
 
-	subscribe(listener: Listener): () => void {
-		this.listeners.add(listener);
-		return () => this.listeners.delete(listener);
+	private emit() {
+		this.listeners.forEach(fn => fn(this.state));
 	}
 
-	private set(patch: Partial<ReservationState>): void {
+	private set(patch: Partial<FlowState>) {
 		this.state = { ...this.state, ...patch };
-		this.listeners.forEach((listener) => listener(this.state));
+		this.emit();
 	}
 
-	/** Reinicia el flujo conservando el menú ya cargado. */
-	reset(): void {
-		const { menu } = this.state;
-		this.state = { ...initialState(), menu };
-		this.listeners.forEach((listener) => listener(this.state));
+	reset() {
+		const { zones, categories, menuItems } = this.state;
+		this.state = { ...initialState(), zones, categories, menuItems };
+		this.emit();
 	}
 
-	setStep(step: Step): void {
-		this.set({ step });
+	goTo(step: FlowStep) { this.set({ step }); }
+
+	goBack() {
+		const { step, choseMenu } = this.state;
+		const order: FlowStep[] = ['step1', 'step2', 'step3', 'step4'];
+		const idx = order.indexOf(step);
+		if (idx <= 0) return;
+		let prev = order[idx - 1];
+		if (prev === 'step3' && choseMenu === false) prev = 'step2';
+		this.set({ step: prev });
 	}
 
-	updateDraft(patch: Partial<ReservationDraft>): void {
-		this.set({ draft: { ...this.state.draft, ...patch } });
+	updateDraft(patch: Partial<ReservationDraft>) {
+		this.set({ draft: { ...this.state.draft, ...patch }, step1Errors: {} });
 	}
 
-	updateCustomer(patch: Partial<CustomerInfo>): void {
-		this.set({
-			draft: { ...this.state.draft, customer: { ...this.state.draft.customer, ...patch } },
-		});
+	updateCustomer(patch: Partial<CustomerInfo>) {
+		this.set({ customer: { ...this.state.customer, ...patch }, step1Errors: {} });
 	}
 
-	/** Suma/resta una unidad de un plato y recalcula totales. qty <= 0 lo remueve. */
-	adjustQuantity(dishId: string, delta: number): void {
-		const current = this.state.selections.find((sel) => sel.dish.id === dishId);
-		const next = Math.max(0, (current?.quantity ?? 0) + delta);
+	async loadZones() {
+		try {
+			const zones = await fetchZones();
+			this.set({ zones });
+		} catch { /* ponytail: zones are static for now */ }
+	}
 
+	async loadAvailability() {
+		const { draft } = this.state;
+		if (!draft.date || draft.partySize < 1) return;
+		this.set({ loadingAvailability: true });
+		try {
+			const availability = await fetchAvailability(draft.date, draft.partySize);
+			this.set({ availability, loadingAvailability: false });
+		} catch {
+			this.set({ loadingAvailability: false });
+		}
+	}
+
+	selectTimeSlot(time: string) {
+		this.set({ draft: { ...this.state.draft, timeSlot: time }, step1Errors: {} });
+	}
+
+	continueFromStep1() {
+		const errors = validateStep1(this.state.draft, this.state.customer);
+		if (Object.keys(errors).length > 0) {
+			this.set({ step1Errors: errors });
+			return;
+		}
+		this.set({ step: 'step2' });
+	}
+
+	chooseMenu(yes: boolean) {
+		this.set({ choseMenu: yes, step: yes ? 'step3' : 'step4' });
+		if (yes && this.state.categories.length === 0) void this.loadMenu();
+	}
+
+	async loadMenu() {
+		this.set({ menuLoading: true });
+		try {
+			const [categories, items] = await Promise.all([fetchMenuCategories(), fetchMenuItems()]);
+			this.set({
+				categories,
+				menuItems: items,
+				menuLoading: false,
+				activeCategoryId: categories[0]?.id ?? null,
+			});
+		} catch (err) {
+			this.set({ menuLoading: false });
+		}
+	}
+
+	setActiveCategory(id: string) {
+		this.set({ activeCategoryId: id });
+	}
+
+	updateCart(itemId: string, delta: number) {
+		const { cart, menuItems } = this.state;
+		const existing = cart.find(c => c.item.id === itemId);
+		const next = Math.max(0, (existing?.quantity ?? 0) + delta);
+		let newCart: CartItem[];
 		if (next === 0) {
-			const selections = this.state.selections.filter((sel) => sel.dish.id !== dishId);
-			this.set({ selections, totals: computeTotals(selections) });
-			return;
+			newCart = cart.filter(c => c.item.id !== itemId);
+		} else if (existing) {
+			newCart = cart.map(c => c.item.id === itemId ? { ...c, quantity: next } : c);
+		} else {
+			const item = menuItems.find(i => i.id === itemId);
+			if (!item) return;
+			newCart = [...cart, { item, quantity: next }];
 		}
-
-		const dish = this.state.menu.dishes.find((d) => d.id === dishId);
-		if (!dish) return;
-
-		const selections = current
-			? this.state.selections.map((sel) =>
-					sel.dish.id === dishId ? { ...sel, quantity: next } : sel,
-				)
-			: [...this.state.selections, { dish, quantity: next }];
-
-		this.set({ selections, totals: computeTotals(selections) });
+		this.set({ cart: newCart, cartTotals: computeCartTotals(newCart) });
 	}
 
-	/** Carga la carta del menú desde la API. */
-	async loadMenu(): Promise<void> {
-		this.set({ menu: { ...this.state.menu, loading: true, error: null } });
+	continueFromStep3() {
+		if (this.state.cart.length === 0) return;
+		this.set({ step: 'step4' });
+	}
+
+	async submitReservation() {
+		const { draft, customer, cart, choseMenu } = this.state;
+		this.set({ submitting: true, submitError: null });
 		try {
-			const dishes = await fetchMenu();
-			this.set({ menu: { dishes, loading: false, error: null } });
-		} catch (err) {
-			this.set({
-				menu: {
-					...this.state.menu,
-					loading: false,
-					error: errorMessage(err, 'No se pudo cargar el menú.'),
-				},
+			const items = choseMenu
+				? cart.map(c => ({ menuItemId: c.item.id, quantity: c.quantity }))
+				: undefined;
+			const reservedAt = `${draft.date}T${draft.timeSlot}`;
+			const response = await submitReservation({
+				zoneId: draft.zoneId,
+				reservedAt,
+				partySize: draft.partySize,
+				guestName: customer.name,
+				guestEmail: customer.email,
+				guestPhone: customer.phone ? `+549${customer.phone}` : '',
+				items,
 			});
+			if (response.init_point) {
+				window.location.href = response.init_point;
+				this.set({ paymentStatus: 'redirecting', reservationId: response.id });
+			} else {
+				this.set({
+					step: 'step4',
+					paymentStatus: 'success',
+					reservationId: response.id,
+					submitting: false,
+				});
+			}
+		} catch (err) {
+			this.set({ submitting: false, submitError: errMsg(err, 'No se pudo procesar la reserva.') });
 		}
 	}
 
-	/**
-	 * Procesa el pago y, al confirmarse, envía la reserva.
-	 *
-	 * TODO(mp): en la integración real, tras crear la preferencia se redirige al
-	 * checkout de Mercado Pago y se espera su confirmación antes de continuar.
-	 */
-	async pay(): Promise<void> {
-		if (this.state.paymentStatus === 'processing') return;
-		this.set({ paymentStatus: 'processing', paymentError: null });
-		try {
-			const intent = await createPaymentIntent(this.state.totals.total);
-			console.debug('[reservation] payment intent:', intent.id);
-			this.set({ paymentStatus: 'paid' });
-			await this.submit();
-		} catch (err) {
-			this.set({
-				paymentStatus: 'idle',
-				paymentError: errorMessage(err, 'No se pudo procesar el pago.'),
-			});
-		}
-	}
-
-	/** Envía la reserva al backend. */
-	async submit(): Promise<void> {
-		if (this.state.paymentStatus !== 'paid') {
-			this.set({
-				submissionStatus: 'error',
-				submissionError: 'El pago debe completarse antes de confirmar la reserva.',
-			});
-			return;
-		}
-		this.set({ submissionStatus: 'submitting' });
-		try {
-			const result = await submitReservation(this.toRequest());
-			this.set({ submissionStatus: 'success', lastReservation: result, step: 'result' });
-		} catch (err) {
-			this.set({
-				submissionStatus: 'error',
-				submissionError: errorMessage(err, 'No se pudo enviar la reserva.'),
-				step: 'result',
-			});
-		}
-	}
-
-	private toRequest(): ReservationRequest {
-		const { date, time, partySize, customer } = this.state.draft;
-		const dishes = this.state.selections.map((sel) => ({ id: sel.dish.id, quantity: sel.quantity }));
-		return { date, time, partySize, customer, dishes: dishes.length > 0 ? dishes : undefined };
+	handlePaymentReturn(status: 'success' | 'failure') {
+		this.set({ step: 'step4', paymentStatus: status });
 	}
 }

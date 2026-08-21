@@ -1,0 +1,39 @@
+---
+// Paso 3: selección de menú por categorías con cantidades.
+import { RESERVATION_DISCOUNT } from '../../utils/pricing';
+
+const discountPercent = Math.round(RESERVATION_DISCOUNT * 100);
+---
+
+<div class="rv-step rv-step--menu" data-step="step3" hidden>
+	<button type="button" class="rv-back-btn" data-action="go-back">← Volver</button>
+	<p class="rv-step-label">Paso 3 de 5</p>
+	<h2 class="rv-step-title">Elegí tus platos</h2>
+
+	<p id="rv-menu-loading" hidden>Cargando carta…</p>
+
+	<nav class="rv-category-tabs" id="rv-category-tabs" hidden></nav>
+
+	<ul class="rv-menu-list" id="rv-menu-list" hidden></ul>
+
+	<div class="rv-menu-sticky-summary" id="rv-sticky-summary" hidden>
+		<div class="rv-sticky-inner">
+			<div class="rv-sticky-line">
+				<span id="rv-sticky-count">0 items</span>
+				<span class="rv-sticky-discount">-{discountPercent}% OFF</span>
+			</div>
+			<div class="rv-sticky-line">
+				<span>Subtotal</span>
+				<span id="rv-sticky-subtotal">—</span>
+			</div>
+			<div class="rv-sticky-line rv-sticky-line--total">
+				<span>Total</span>
+				<span id="rv-sticky-total">—</span>
+			</div>
+			<button type="button" class="btn btn-gold rv-sticky-btn" data-action="continue-step3" disabled>
+				Continuar →
+			</button>
+			<p class="rv-sticky-hint" id="rv-sticky-hint">Elegí al menos un plato para continuar</p>
+		</div>
+	</div>
+</div>

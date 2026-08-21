@@ -1,0 +1,28 @@
+---
+// Paso 4: datos de contacto (nombre, teléfono, email).
+---
+
+<div class="rv-step" data-step="step4" hidden>
+	<button type="button" class="rv-back-btn" data-action="go-back">← Volver</button>
+	<p class="rv-step-label">Paso 4 de 5</p>
+	<h2 class="rv-step-title">Datos de contacto</h2>
+
+	<div class="rv-field">
+		<label for="rv-name">Nombre</label>
+		<input id="rv-name" name="name" type="text" autocomplete="name" required />
+	</div>
+	<div class="rv-field">
+		<label for="rv-phone">Teléfono</label>
+		<input id="rv-phone" name="phone" type="tel" autocomplete="tel" required />
+	</div>
+	<div class="rv-field">
+		<label for="rv-email">Email</label>
+		<input id="rv-email" name="email" type="email" autocomplete="email" required />
+	</div>
+
+	<p class="rv-form-error" id="rv-step4-errors" role="alert" hidden></p>
+
+	<div class="rv-actions">
+		<button type="button" class="btn" data-action="continue-step4">Continuar</button>
+	</div>
+</div>

@@ -1,0 +1,43 @@
+---
+// Paso 5: confirmación antes de enviar.
+---
+
+<div class="rv-step" data-step="step5" hidden>
+	<button type="button" class="rv-back-btn" data-action="go-back">← Volver</button>
+	<p class="rv-step-label">Paso 5 de 5</p>
+	<h2 class="rv-step-title">Confirmar reserva</h2>
+
+	<dl class="rv-confirm-dl">
+		<dt>Fecha</dt>
+		<dd id="rv-confirm-date">—</dd>
+		<dt>Horario</dt>
+		<dd id="rv-confirm-time">—</dd>
+		<dt>Zona</dt>
+		<dd id="rv-confirm-zone">—</dd>
+		<dt>Personas</dt>
+		<dd id="rv-confirm-party">—</dd>
+		<dt>Contacto</dt>
+		<dd id="rv-confirm-customer">—</dd>
+	</dl>
+
+	<div id="rv-confirm-menu-section" hidden>
+		<h3 class="rv-confirm-menu-title">Menú seleccionado</h3>
+		<ul id="rv-confirm-items"></ul>
+		<dl class="rv-confirm-totals">
+			<dt>Subtotal</dt>
+			<dd id="rv-confirm-subtotal">—</dd>
+			<dt>Descuento</dt>
+			<dd id="rv-confirm-discount">—</dd>
+			<dt>Total</dt>
+			<dd id="rv-confirm-total">—</dd>
+		</dl>
+	</div>
+
+	<p class="rv-form-error" id="rv-submit-error" role="alert" hidden></p>
+
+	<div class="rv-actions">
+		<button type="button" class="btn btn-outline" data-action="submit-reservation" id="rv-submit-btn">
+			Confirmar reserva
+		</button>
+	</div>
+</div>

@@ -1,14 +1,25 @@
-// Tipos del flujo de reservas.
-
-/** Platos de la carta cargados desde la API del menú. */
-export interface Dish {
+export interface Zone {
 	id: string;
 	name: string;
 	description: string;
-	/** Precio en la moneda local (ej: ARS). */
-	price: number;
-	category: string;
+}
+
+export interface AvailabilitySlot {
+	time: string;
 	available: boolean;
+}
+
+export interface MenuItem {
+	id: string;
+	categoryId: string;
+	name: string;
+	description: string;
+	price: number;
+}
+
+export interface MenuCategory {
+	id: string;
+	name: string;
 }
 
 export interface CustomerInfo {
@@ -17,47 +28,29 @@ export interface CustomerInfo {
 	email: string;
 }
 
-/** Estado editable durante el flujo, antes de enviar al backend. */
-export interface ReservationDraft {
-	/** YYYY-MM-DD (value de <input type="date">). */
-	date: string;
-	/** HH:mm (value de <input type="time">). */
-	time: string;
-	partySize: number;
-	customer: CustomerInfo;
-}
-
-/** Platos seleccionados por el cliente (denormalizados para el resumen). */
-export interface Selection {
-	dish: Dish;
+export interface CartItem {
+	item: MenuItem;
 	quantity: number;
 }
 
-export interface Totals {
+export interface CartTotals {
 	subtotal: number;
 	discount: number;
 	total: number;
 }
 
-export type Step = 'details' | 'dishes' | 'summary' | 'payment' | 'result';
+export type FlowStep = 'step1' | 'step2' | 'step3' | 'step4';
 
-/** Payload final que recibirá el backend. */
-export interface ReservationRequest {
+export interface ReservationDraft {
 	date: string;
-	time: string;
 	partySize: number;
-	customer: CustomerInfo;
-	dishes?: Array<{ id: string; quantity: number }>;
+	zoneId: string;
+	timeSlot: string;
 }
 
-export interface ReservationResult {
+export interface ReservationResponse {
 	id: string;
-	status: 'confirmed' | 'pending';
+	init_point?: string;
 }
 
-export interface PaymentIntent {
-	id: string;
-	amount: number;
-	currency: string;
-	status: string;
-}
+export type PaymentStatus = 'idle' | 'redirecting' | 'success' | 'failure';

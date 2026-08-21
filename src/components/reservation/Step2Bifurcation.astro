@@ -1,0 +1,24 @@
+---
+// Paso 2: bifurcación — menú anticipado con 10% OFF o confirmar sin menú.
+---
+
+<div class="rv-step" data-step="step2" hidden>
+	<button type="button" class="rv-back-btn" data-action="go-back">← Volver</button>
+	<p class="rv-step-label">Paso 2</p>
+	<h2 class="rv-step-title">¿Querés elegir tu menú ahora?</h2>
+
+	<div class="rv-bifurcation">
+		<div class="rv-bifurcation-card rv-bifurcation-card--highlighted">
+			<div class="rv-bifurcation-badge">10% OFF</div>
+			<h3 class="rv-bifurcation-title">Elegí tu menú anticipado</h3>
+			<p class="rv-bifurcation-desc">Seleccioná tus platos ahora y obtené un 10% de descuento en tu reserva.</p>
+			<button type="button" class="btn btn-gold rv-bifurcation-cta" data-action="choose-menu-yes">Elegir mi menú →</button>
+		</div>
+
+		<div class="rv-bifurcation-card">
+			<h3 class="rv-bifurcation-title">Confirmar reserva</h3>
+			<p class="rv-bifurcation-desc">Reservá tu mesa sin elegir platos. Podés ver el menú cuando llegues al restaurante.</p>
+			<button type="button" class="btn btn-outline rv-bifurcation-cta" data-action="choose-menu-no">Confirmar sin menú</button>
+		</div>
+	</div>
+</div>
