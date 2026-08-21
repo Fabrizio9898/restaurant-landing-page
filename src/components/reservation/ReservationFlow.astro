@@ -1,0 +1,19 @@
+---
+import Step1Details from './Step1Details.astro';
+import Step2Bifurcation from './Step2Bifurcation.astro';
+import Step3Menu from './Step3Menu.astro';
+import Step4Confirm from './Step4Confirm.astro';
+---
+
+<section data-reservation-flow>
+	<Step1Details />
+	<Step2Bifurcation />
+	<Step3Menu />
+	<Step4Confirm />
+</section>
+
+<script>
+	import { initReservationFlow } from './reservationFlow';
+	const root = document.querySelector<HTMLElement>('[data-reservation-flow]');
+	if (root) initReservationFlow(root);
+</script>

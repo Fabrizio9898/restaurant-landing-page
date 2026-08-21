@@ -1,0 +1,66 @@
+---
+// Paso 1: datos de reserva + datos de contacto.
+---
+
+<div class="rv-step" data-step="step1">
+	<div class="rv-field">
+		<label for="rv-date">Fecha</label>
+		<input id="rv-date" name="date" type="date" required />
+	</div>
+
+	<div class="rv-field">
+		<label for="rv-party-size">Personas</label>
+		<input id="rv-party-size" name="partySize" type="number" min="1" max="20" step="1" value="2" required />
+	</div>
+
+	<fieldset class="rv-fieldset" id="rv-zones-fieldset">
+		<legend>Zona</legend>
+		<div id="rv-zones-list"></div>
+	</fieldset>
+	<p class="rv-field-error" id="rv-zone-error" hidden></p>
+
+	<div id="rv-availability-section" hidden>
+		<p class="rv-field-label">Horarios disponibles</p>
+		<p id="rv-availability-loading" hidden>Buscando horarios…</p>
+		<div id="rv-slots-list"></div>
+		<p class="rv-field-error" id="rv-slot-error" hidden></p>
+	</div>
+
+	<hr class="rv-divider" />
+
+	<fieldset class="rv-fieldset">
+		<legend>Datos de contacto</legend>
+		<div class="rv-field">
+			<label for="rv-name">Nombre</label>
+			<input id="rv-name" name="name" type="text" autocomplete="name" required />
+		</div>
+		<div class="rv-field">
+			<label for="rv-phone">
+				Teléfono
+				<span class="rv-label-optional">(opcional)</span>
+			</label>
+			<div class="rv-phone-group">
+				<span class="rv-phone-prefix">+54 9</span>
+				<input id="rv-phone" name="phone" type="tel" autocomplete="tel" placeholder="11 0000-0000" />
+			</div>
+		</div>
+		<div class="rv-field">
+			<label for="rv-email">
+				Email
+				<span class="rv-label-optional">(opcional)</span>
+			</label>
+			<input id="rv-email" name="email" type="email" autocomplete="email" />
+		</div>
+	</fieldset>
+
+	<p class="rv-reminder-note">
+		<span class="rv-reminder-icon">✉</span>
+		Recibirás un recordatorio y los datos de tu reserva por email.
+	</p>
+
+	<p class="rv-form-error" id="rv-step1-errors" role="alert" hidden></p>
+
+	<div class="rv-actions">
+		<button type="button" class="btn" data-action="continue-step1">Continuar</button>
+	</div>
+</div>
