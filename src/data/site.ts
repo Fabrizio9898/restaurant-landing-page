@@ -218,7 +218,7 @@ export const site = {
     mapEmbed:
       "https://maps.google.com/maps?q=Portales+de+Uribelarrea,+Av.+Valeria+de+Crotto,+Uribelarrea,+Provincia+de+Buenos+Aires&t=&z=16&ie=UTF8&iwloc=&output=embed",
     hours: [
-      { days: "Vie – Dom", time: "12:00 – 16:00 / 20:00 – 00:00" },
+      { days: "Vie – Dom", time: "11:00 – 17:00" },
       { days: "Lun – Jue", time: "Cerrado" },
     ],
     phone: "+54 9 11 0000-0000",

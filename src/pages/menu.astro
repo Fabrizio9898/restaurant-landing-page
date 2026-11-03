@@ -13,6 +13,11 @@ const price = (value: string) => value.replace(/^\$\s?/, '$ ');
 	<main class="pt-28 pb-16 bg-white min-h-screen">
 		<div class="px-5 md:px-12">
 			<header class="max-w-2xl">
+				<button type="button" class="menu-back" id="menu-back" aria-label="Volver">
+					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+						<path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+					</svg>
+				</button>
 				<p class="section-label">Carta</p>
 				<h1 class="section-title">Menú</h1>
 				<p class="mt-3 text-sm text-(--color-wood-dark)">
@@ -69,6 +74,21 @@ const price = (value: string) => value.replace(/^\$\s?/, '$ ');
 </Layout>
 
 <style>
+	.menu-back {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 2.25rem;
+		height: 2.25rem;
+		margin-bottom: 1rem;
+		border: 1px solid var(--border-light);
+		background: transparent;
+		color: var(--color-blue);
+		cursor: pointer;
+	}
+	.menu-back:hover {
+		border-color: var(--color-gold);
+	}
 	.menu-filter {
 		position: sticky;
 		top: 4rem;
@@ -223,6 +243,12 @@ const price = (value: string) => value.replace(/^\$\s?/, '$ ');
 </style>
 
 <script>
+	const backBtn = document.getElementById('menu-back');
+	backBtn?.addEventListener('click', () => {
+		if (history.length > 1) history.back();
+		else location.href = '/';
+	});
+
 	const chips = document.querySelectorAll<HTMLButtonElement>('[data-menu-filter]');
 	const sections = document.querySelectorAll<HTMLElement>('[data-menu-category]');
 
