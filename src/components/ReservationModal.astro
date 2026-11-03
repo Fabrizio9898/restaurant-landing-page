@@ -13,7 +13,7 @@
 
   <form id="reservation-form" class="resv-form" novalidate>
     <h2 id="resv-title" class="resv-title">Reserva</h2>
-    <p class="resv-hint">Jueves a domingo, de 12:00 a 18:00&nbsp;hs.</p>
+    <p class="resv-hint">Jueves a domingo, de 11:00 a 17:00&nbsp;hs.</p>
 
     <div class="resv-field">
       <span class="resv-label">Día</span>
@@ -370,8 +370,8 @@
   } from '../lib/reservations';
 
   const TIME_SLOTS = [
-    '12:00', '12:30', '13:00', '13:30', '14:00', '14:30',
-    '15:00', '15:30', '16:00', '16:30', '17:00', '17:30',
+    '11:00', '11:30', '12:00', '12:30', '13:00', '13:30',
+    '14:00', '14:30', '15:00', '15:30', '16:00', '16:30',
   ];
   const DEFAULT_DURATION_MINUTES = 90;
   const VALID_WEEKDAYS = [0, 4, 5, 6]; // Sun, Thu, Fri, Sat
@@ -447,10 +447,10 @@
     return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
   }
 
-  // An EVENT block that fully covers the 12:00–18:00 window blocks every regular slot that day.
+  // An EVENT block that fully covers the 11:00–17:00 window blocks every regular slot that day.
   function dayFullyBlocked(dateKey: string, events: AvailabilityBlock[]): boolean {
-    const windowStart = new Date(toStartAt(dateKey, '12:00'));
-    const windowEnd = new Date(toStartAt(dateKey, '18:00'));
+    const windowStart = new Date(toStartAt(dateKey, '11:00'));
+    const windowEnd = new Date(toStartAt(dateKey, '17:00'));
     return events.some(
       (e) => new Date(e.startAt) <= windowStart && new Date(e.endAt) >= windowEnd,
     );
