@@ -4,35 +4,239 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { site } from '../data/site';
 
-const categories = Array.from(new Set(site.menu.map((i) => i.category)));
+const categories = site.menu;
+const price = (value: string) => value.replace(/^\$\s?/, '$ ');
 ---
 
 <Layout title={`Menú — ${site.name}`}>
 	<Header />
-	<main class="pt-28 bg-(--color-cream) min-h-screen">
-		<section class="section-pad">
-			<div class="section-inner">
-				<p class="section-label">Carta completa</p>
+	<main class="pt-28 pb-16 bg-white min-h-screen">
+		<div class="px-5 md:px-12">
+			<header class="max-w-2xl">
+				<p class="section-label">Carta</p>
 				<h1 class="section-title">Menú</h1>
+				<p class="mt-3 text-sm text-(--color-wood-dark)">
+					Horario: 11:00 a 17:00 hs · 10% off en efectivo
+				</p>
+			</header>
 
+			<div class="menu-filter" role="group" aria-label="Filtrar el menú">
+				<button type="button" class="menu-chip is-active" data-menu-filter="all" aria-pressed="true">Todo</button>
 				{categories.map((cat) => (
-					<div class="mt-14">
-						<h2 class="font-serif text-2xl text-(--color-wood-dark) mb-6 border-b border-(--color-wood)/15 pb-2">{cat}</h2>
-						<ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-							{site.menu.filter((i) => i.category === cat).map((item) => (
-								<li class="border border-(--color-wood)/15 bg-white p-5 hover:border-(--color-gold)/40 transition-colors">
-									<div class="flex items-start justify-between gap-3">
-										<h3 class="font-serif text-lg">{item.name}</h3>
-										<span class="text-sm text-(--color-gold) whitespace-nowrap">{item.price}</span>
-									</div>
-									<p class="mt-2 text-sm text-gray-500 leading-relaxed">{item.description}</p>
-								</li>
-							))}
-							</ul>
-						</div>
-					))}
-				</div>
-			</section>
-		</main>
-		<Footer />
-	</Layout>
+					<button type="button" class="menu-chip" data-menu-filter={cat.title} aria-pressed="false">{cat.title}</button>
+				))}
+			</div>
+
+			<div class="menu-columns">
+				{categories.map((cat) => (
+					<section class="menu-category" data-menu-category={cat.title}>
+						<h2 class="menu-category__title">{cat.title}</h2>
+						{cat.groups.map((group) => (
+							<div class="menu-group">
+								<h3 class="menu-group__title">{group.title}</h3>
+								{group.note && <p class="menu-group__note">{group.note}</p>}
+								<ul class="menu-list">
+									{group.items.map((item) => (
+										<li class="menu-item">
+											<div class="menu-item__row">
+												<span class="menu-item__name">{item.name}</span>
+												{item.price && <span class="menu-item__price">{price(item.price)}</span>}
+											</div>
+											{item.desc && <p class="menu-item__desc">{item.desc}</p>}
+											{item.options && (
+												<div class="menu-item__options">
+													{item.options.map((opt) => (
+														<span>{opt.label} <b>{price(opt.price)}</b></span>
+													))}
+												</div>
+											)}
+										</li>
+									))}
+								</ul>
+							</div>
+						))}
+					</section>
+				))}
+			</div>
+
+			<div class="menu-cta">
+				<p>¿Te guardamos la mesa?</p>
+				<a href="/reservas" class="btn menu-cta__btn">Reservar</a>
+			</div>
+		</div>
+	</main>
+	<Footer />
+</Layout>
+
+<style>
+	.menu-filter {
+		position: sticky;
+		top: 4rem;
+		z-index: 30;
+		display: flex;
+		gap: 0.5rem;
+		overflow-x: auto;
+		margin: 1.5rem -1.25rem 0;
+		padding: 0.75rem 1.25rem;
+		background: rgba(255, 255, 255, 0.95);
+		backdrop-filter: blur(8px);
+		border-bottom: 1px solid var(--border-light);
+		scrollbar-width: none;
+	}
+	.menu-filter::-webkit-scrollbar {
+		display: none;
+	}
+	.menu-chip {
+		flex-shrink: 0;
+		padding: 0.45rem 0.8rem;
+		border: 1px solid var(--border-light);
+		background: transparent;
+		font-family: var(--font-sans);
+		font-size: 0.68rem;
+		text-transform: uppercase;
+		letter-spacing: 0.12em;
+		color: var(--color-blue);
+		cursor: pointer;
+		white-space: nowrap;
+	}
+	.menu-chip:hover {
+		border-color: var(--color-gold);
+	}
+	.menu-chip.is-active {
+		background: var(--color-blue);
+		border-color: var(--color-blue);
+		color: var(--color-white);
+	}
+
+	.menu-columns {
+		margin-top: 2.5rem;
+	}
+	@media (min-width: 900px) {
+		.menu-columns {
+			columns: 2;
+			column-gap: 3.5rem;
+		}
+	}
+	.menu-category {
+		break-inside: avoid;
+		margin-bottom: 2.5rem;
+	}
+	.menu-category__title {
+		font-family: var(--font-serif);
+		font-size: 1.75rem;
+		font-weight: 500;
+		color: var(--color-blue);
+		padding-bottom: 0.5rem;
+		border-bottom: 1px solid var(--border-light);
+		margin-bottom: 1rem;
+	}
+	.menu-group {
+		break-inside: avoid;
+		margin-bottom: 1.75rem;
+	}
+	.menu-group__title {
+		font-size: 0.68rem;
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 0.18em;
+		color: var(--color-gray-500);
+		margin-bottom: 0.35rem;
+	}
+	.menu-group__note {
+		font-size: 0.78rem;
+		font-style: italic;
+		color: var(--color-gray-500);
+		margin-bottom: 0.5rem;
+	}
+	.menu-list {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+	.menu-item {
+		padding: 0.55rem 0;
+		border-bottom: 1px dashed var(--border-light);
+	}
+	.menu-item:last-child {
+		border-bottom: none;
+	}
+	.menu-item__row {
+		display: flex;
+		align-items: baseline;
+		gap: 0.5rem;
+	}
+	.menu-item__name {
+		font-family: var(--font-sans);
+		font-size: 0.95rem;
+		font-weight: 500;
+	}
+	.menu-item__price {
+		margin-left: auto;
+		color: var(--color-wood-dark);
+		font-weight: 500;
+		white-space: nowrap;
+	}
+	.menu-item__desc {
+		margin-top: 0.1rem;
+		font-size: 0.8rem;
+		color: var(--color-gray-500);
+	}
+	.menu-item__options {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.25rem 1rem;
+		margin-top: 0.2rem;
+		font-size: 0.8rem;
+		color: var(--color-gray-500);
+	}
+	.menu-item__options b {
+		color: var(--color-wood-dark);
+		font-weight: 500;
+	}
+
+	.menu-cta {
+		margin-top: 1rem;
+		padding-top: 2rem;
+		border-top: 1px solid var(--border-light);
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+	.menu-cta p {
+		font-family: var(--font-serif);
+		font-size: 1.5rem;
+		color: var(--color-blue);
+	}
+	.menu-cta__btn {
+		width: 100%;
+	}
+	@media (min-width: 640px) {
+		.menu-cta {
+			flex-direction: row;
+			align-items: center;
+			justify-content: space-between;
+		}
+		.menu-cta__btn {
+			width: auto;
+		}
+	}
+</style>
+
+<script>
+	const chips = document.querySelectorAll<HTMLButtonElement>('[data-menu-filter]');
+	const sections = document.querySelectorAll<HTMLElement>('[data-menu-category]');
+
+	chips.forEach((chip) => {
+		chip.addEventListener('click', () => {
+			const filter = chip.dataset.menuFilter;
+			chips.forEach((c) => {
+				const active = c === chip;
+				c.classList.toggle('is-active', active);
+				c.setAttribute('aria-pressed', String(active));
+			});
+			sections.forEach((section) => {
+				section.hidden = filter !== 'all' && section.dataset.menuCategory !== filter;
+			});
+		});
+	});
+</script>

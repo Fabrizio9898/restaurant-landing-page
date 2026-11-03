@@ -1,73 +1,27 @@
-# AGENT.md
+# AGENTS.md
 
 ## Project
 
-Official restaurant website. It looks like a landing page but should be treated as a product-oriented web app.
+Restaurant landing page. The landing (index) is already designed and approved.
 
-Core purpose:
-- Showcase the restaurant
-- Display the menu
-- Handle table reservations
-- Allow discounted pre-orders during booking
+Current focus: **reservations** — the flow is reserving only (no menu in the reservation step). The menu may get its own page later.
 
-Goal: improve customer experience before arrival and streamline restaurant operations.
+## Run
 
-## Tech Stack
+```bash
+npm install
+npm run dev      # http://localhost:4321
+npm run build
+```
 
-- Astro
-- TypeScript
-- Tailwind CSS
-- CSS Modules (when needed)
+Node >= 22.12. Stack: Astro, TypeScript, Tailwind CSS.
 
-## Code Principles
+## Rules
 
-- Respect the existing architecture.
-- Build small, reusable, typed components.
-- Keep components focused on a single responsibility.
-- Write clean, maintainable code.
-- Do not introduce unnecessary complexity.
-
-## Project Structure
-
-Use and preserve the existing structure:
-
-- layouts
-- pages
-- components
-- ui
-- sections
-- hooks
-- services
-- utils
-- types
-
-## UI & UX
-
-- Do not invent features or business logic.
-- Only implement what is requested.
-- Prioritize clear UX, responsive layouts, and visual consistency.
-- When designing a page, first define the layout and user flow, then build the requested components.
+- Do not touch the index page unless explicitly asked to integrate a component.
+- Do not invent features or business logic. Only implement what is requested.
+- UI changes: avoid unnecessary secondary labels and descriptions. Let the layout do the explaining.
 
 ## Backend
 
-- Assume data comes from an API.
-- Keep UI and business logic separated.
-- Avoid hardcoded data unless explicitly requested.
-- Use services/adapters for data access.
-
-## Agent Skills
-
-This project uses installed skills.
-
-Before implementing a feature:
-
-1. Check available skills.
-2. Load any skill relevant to the task.
-3. Follow skill instructions together with this AGENTS.md.
-
-Relevant examples:
-
-- UI pages → frontend-design, accessibility
-- Astro components → astro
-- Styling → tailwind-css-patterns
-- Type modeling → typescript-advanced-types
+Separate repo (provided on request). Data comes from an API.

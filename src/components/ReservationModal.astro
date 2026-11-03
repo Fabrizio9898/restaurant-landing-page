@@ -1,0 +1,694 @@
+---
+---
+
+<dialog id="reservation-modal" class="resv-dialog" aria-labelledby="resv-title">
+  <button
+    type="button"
+    class="resv-close"
+    aria-label="Cerrar"
+    data-reservation-close
+  >
+    &times;
+  </button>
+
+  <form id="reservation-form" class="resv-form" novalidate>
+    <h2 id="resv-title" class="resv-title">Reserva</h2>
+    <p class="resv-hint">Jueves a domingo, de 12:00 a 18:00&nbsp;hs.</p>
+
+    <div class="resv-field">
+      <span class="resv-label">Día</span>
+      <div class="resv-cal">
+        <div class="resv-cal-head">
+          <button type="button" class="resv-cal-nav" id="resv-cal-prev" aria-label="Mes anterior">‹</button>
+          <span class="resv-cal-month" id="resv-cal-month"></span>
+          <button type="button" class="resv-cal-nav" id="resv-cal-next" aria-label="Mes siguiente">›</button>
+        </div>
+        <div class="resv-cal-weekdays">
+          <span>Lu</span><span>Ma</span><span>Mi</span><span>Ju</span><span>Vi</span><span>Sá</span><span>Do</span>
+        </div>
+        <div class="resv-cal-grid" id="resv-cal-grid" role="group" aria-label="Elegí el día"></div>
+        <p class="resv-cal-legend"><span class="resv-day-dot"></span> Día con mesas disponibles</p>
+      </div>
+    </div>
+
+    <div class="resv-field">
+      <span class="resv-label">Hora</span>
+      <div class="resv-chip-row" id="resv-times" role="group" aria-label="Elegí la hora">
+        <p class="resv-chip-placeholder" id="resv-times-placeholder">Elegí un día primero</p>
+      </div>
+    </div>
+
+    <div class="resv-grid-2">
+      <div class="resv-field">
+        <span class="resv-label" id="resv-party-label">Personas</span>
+        <div class="resv-stepper" role="group" aria-labelledby="resv-party-label">
+          <button type="button" class="resv-step-btn" id="resv-minus" aria-label="Menos personas">−</button>
+          <input id="rv-party" name="partySize" type="number" min="1" value="2" inputmode="numeric" aria-label="Cantidad de personas" />
+          <button type="button" class="resv-step-btn" id="resv-plus" aria-label="Más personas">+</button>
+        </div>
+      </div>
+
+      <div class="resv-field">
+        <label class="resv-label" for="rv-name">Nombre</label>
+        <input id="rv-name" name="name" type="text" autocomplete="name" required />
+      </div>
+    </div>
+
+    <div class="resv-field">
+      <label class="resv-label" for="rv-email">Email</label>
+      <input id="rv-email" name="email" type="email" autocomplete="email" required />
+    </div>
+    <p class="resv-note">Te mandamos la confirmación a este email.</p>
+
+    <div class="resv-field">
+      <label class="resv-label" for="rv-notes">Notas <span class="resv-optional">(opcional)</span></label>
+      <input id="rv-notes" name="notes" type="text" />
+    </div>
+
+    <p class="resv-error" id="reservation-error" role="alert" hidden></p>
+    <p class="resv-success" id="reservation-success" role="status" hidden></p>
+
+    <button type="submit" class="btn resv-submit" id="reservation-submit">Confirmar reserva</button>
+  </form>
+</dialog>
+
+<style is:global>
+  .resv-dialog {
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    width: min(28rem, 94vw);
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 1.5rem;
+    border: 1px solid var(--color-black);
+    background: var(--color-white);
+    color: var(--color-black);
+    font-family: var(--font-sans);
+  }
+
+  .resv-dialog::backdrop {
+    background: rgba(0, 0, 0, 0.7);
+  }
+
+  .resv-dialog:not([open]) {
+    display: none;
+  }
+
+  .resv-close {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    line-height: 1;
+    background: none;
+    border: none;
+    color: var(--color-black);
+    cursor: pointer;
+  }
+  .resv-close:hover {
+    color: var(--color-blue);
+  }
+
+  .resv-title {
+    font-family: var(--font-serif);
+    font-size: 1.75rem;
+    margin-bottom: 0.15rem;
+  }
+
+  .resv-hint {
+    font-size: 0.8rem;
+    color: #555;
+    margin-bottom: 1rem;
+  }
+
+  .resv-field {
+    margin-bottom: 0.9rem;
+  }
+
+  .resv-label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 0.4rem;
+  }
+
+  .resv-optional {
+    font-weight: 300;
+    text-transform: none;
+    letter-spacing: 0;
+    color: #888;
+    font-size: 0.7rem;
+  }
+
+  .resv-field input[type="text"],
+  .resv-field input[type="email"],
+  .resv-field input[type="tel"] {
+    width: 100%;
+    padding: 0.55rem 0.7rem;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    border: 1px solid #ccc;
+    background: var(--color-white);
+    color: var(--color-black);
+    outline: none;
+  }
+  .resv-field input:focus {
+    border-color: var(--color-black);
+  }
+
+  .resv-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+
+  .resv-note {
+    font-size: 0.7rem;
+    color: #888;
+    margin: -0.4rem 0 0.9rem;
+  }
+
+  /* calendar */
+  .resv-cal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+  }
+  .resv-cal-month {
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-transform: capitalize;
+  }
+  .resv-cal-nav {
+    width: 1.75rem;
+    height: 1.75rem;
+    font-size: 1rem;
+    background: var(--color-white);
+    border: 1px solid #ccc;
+    cursor: pointer;
+    line-height: 1;
+  }
+  .resv-cal-nav:hover:not(:disabled) {
+    border-color: var(--color-black);
+  }
+  .resv-cal-nav:disabled {
+    color: #ccc;
+    border-color: #eee;
+    cursor: default;
+  }
+  .resv-cal-weekdays,
+  .resv-cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+  }
+  .resv-cal-weekdays {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #888;
+    text-align: center;
+    margin-bottom: 0.25rem;
+  }
+  .resv-cal-grid {
+    gap: 2px;
+  }
+  .resv-day {
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    background: var(--color-white);
+    border: 1px solid transparent;
+    color: var(--color-black);
+    cursor: pointer;
+  }
+  .resv-day:hover:not(:disabled) {
+    border-color: var(--color-black);
+  }
+  .resv-day.is-selected {
+    background: var(--color-blue);
+    border-color: var(--color-blue);
+    color: var(--color-white);
+  }
+  .resv-day:disabled {
+    background: #f4f4f4;
+    color: #bbb;
+    cursor: default;
+  }
+  .resv-day--empty {
+    visibility: hidden;
+  }
+  .resv-day-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #2e7d32;
+    flex-shrink: 0;
+  }
+  .resv-day.is-selected .resv-day-dot {
+    background: var(--color-white);
+  }
+  .resv-cal-legend {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.68rem;
+    color: #888;
+    margin-top: 0.5rem;
+  }
+
+  /* day / time chips */
+  .resv-chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .resv-chip-placeholder {
+    font-size: 0.8rem;
+    color: #888;
+  }
+  .resv-chip {
+    padding: 0.45rem 0.7rem;
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    border: 1px solid #ccc;
+    background: var(--color-white);
+    color: var(--color-black);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .resv-chip:hover {
+    border-color: var(--color-black);
+  }
+  .resv-chip.is-selected {
+    background: var(--color-blue);
+    border-color: var(--color-blue);
+    color: var(--color-white);
+  }
+  .resv-chip:disabled {
+    background: #f4f4f4;
+    color: #ccc;
+    border-color: #eee;
+    cursor: default;
+    text-decoration: line-through;
+  }
+
+  /* party stepper */
+  .resv-stepper {
+    display: flex;
+    align-items: stretch;
+    border: 1px solid #ccc;
+  }
+  .resv-step-btn {
+    width: 2.25rem;
+    flex-shrink: 0;
+    font-size: 1.1rem;
+    background: var(--color-white);
+    border: none;
+    cursor: pointer;
+  }
+  .resv-step-btn:hover {
+    background: #f0f0f0;
+  }
+  .resv-stepper input {
+    flex: 1;
+    min-width: 0;
+    text-align: center;
+    border: none;
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    font-size: 0.95rem;
+    outline: none;
+  }
+
+  .resv-error,
+  .resv-success {
+    font-size: 0.8rem;
+    margin-bottom: 0.9rem;
+  }
+  .resv-error {
+    color: #b02a2a;
+  }
+  .resv-success {
+    color: var(--color-black);
+    background: #f5f5f5;
+    border: 1px solid var(--color-black);
+    padding: 0.6rem 0.75rem;
+  }
+
+  .resv-submit {
+    width: 100%;
+  }
+
+  @media (max-width: 420px) {
+    .resv-grid-2 {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  import {
+    createReservation,
+    getAvailability,
+    toStartAt,
+    ReservationError,
+    type AvailabilityBlock,
+  } from '../lib/reservations';
+
+  const TIME_SLOTS = [
+    '12:00', '12:30', '13:00', '13:30', '14:00', '14:30',
+    '15:00', '15:30', '16:00', '16:30', '17:00', '17:30',
+  ];
+  const DEFAULT_DURATION_MINUTES = 90;
+  const VALID_WEEKDAYS = [0, 4, 5, 6]; // Sun, Thu, Fri, Sat
+  const MONTH_LABELS = [
+    'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+    'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre',
+  ];
+  const MAX_MONTHS_AHEAD = 3;
+
+  const modal = document.getElementById('reservation-modal') as HTMLDialogElement | null;
+  const form = document.getElementById('reservation-form') as HTMLFormElement | null;
+  const errorEl = document.getElementById('reservation-error');
+  const successEl = document.getElementById('reservation-success');
+  const submitBtn = document.getElementById('reservation-submit') as HTMLButtonElement | null;
+  const calGrid = document.getElementById('resv-cal-grid');
+  const calMonthEl = document.getElementById('resv-cal-month');
+  const calPrevBtn = document.getElementById('resv-cal-prev') as HTMLButtonElement | null;
+  const calNextBtn = document.getElementById('resv-cal-next') as HTMLButtonElement | null;
+  const timesEl = document.getElementById('resv-times');
+  const partyInput = document.getElementById('rv-party') as HTMLInputElement | null;
+  const minusBtn = document.getElementById('resv-minus');
+  const plusBtn = document.getElementById('resv-plus');
+
+  if (
+    !modal || !form || !errorEl || !successEl || !submitBtn ||
+    !calGrid || !calMonthEl || !calPrevBtn || !calNextBtn ||
+    !timesEl || !partyInput || !minusBtn || !plusBtn
+  ) {
+    throw new Error('Reservation modal markup is missing expected elements.');
+  }
+
+  let selectedDate: string | null = null; // "YYYY-MM-DD"
+  let selectedTime: string | null = null; // "HH:MM"
+  let viewYear = 0;
+  let viewMonth = 0; // 0-indexed
+  const availabilityCache = new Map<string, AvailabilityBlock[]>();
+
+  function pad(n: number): string {
+    return String(n).padStart(2, '0');
+  }
+
+  function dateKeyOf(d: Date): string {
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  }
+
+  // Restaurant is always Argentina time, regardless of the visitor's device timezone.
+  // Built from Intl parts (not a toLocaleString()-then-reparse trick), which some
+  // browsers format in a way Date() can't parse back — that silently produced an
+  // Invalid Date here, making every day compare as "in the past" and look disabled.
+  function nowInBuenosAires(): Date {
+    const parts = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'America/Argentina/Buenos_Aires',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false,
+    }).formatToParts(new Date());
+    const get = (type: string) => Number(parts.find((p) => p.type === type)?.value ?? 0);
+    return new Date(
+      get('year'),
+      get('month') - 1,
+      get('day'),
+      get('hour') % 24,
+      get('minute'),
+      get('second'),
+    );
+  }
+
+  function currentTimeStr(d: Date): string {
+    return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  }
+
+  // An EVENT block that fully covers the 12:00–18:00 window blocks every regular slot that day.
+  function dayFullyBlocked(dateKey: string, events: AvailabilityBlock[]): boolean {
+    const windowStart = new Date(toStartAt(dateKey, '12:00'));
+    const windowEnd = new Date(toStartAt(dateKey, '18:00'));
+    return events.some(
+      (e) => new Date(e.startAt) <= windowStart && new Date(e.endAt) >= windowEnd,
+    );
+  }
+
+  async function fetchMonthAvailability(year: number, month: number): Promise<AvailabilityBlock[]> {
+    const cacheKey = `${year}-${pad(month + 1)}`;
+    const cached = availabilityCache.get(cacheKey);
+    if (cached) return cached;
+
+    const from = `${year}-${pad(month + 1)}-01T00:00:00-03:00`;
+    const nextMonth = new Date(year, month + 1, 1);
+    const to = `${nextMonth.getFullYear()}-${pad(nextMonth.getMonth() + 1)}-01T00:00:00-03:00`;
+
+    const blocks = await getAvailability(from, to);
+    availabilityCache.set(cacheKey, blocks);
+    return blocks;
+  }
+
+  async function renderCalendar() {
+    const now = nowInBuenosAires();
+    const todayKey = dateKeyOf(now);
+
+    calMonthEl!.textContent = `${MONTH_LABELS[viewMonth]} ${viewYear}`;
+    calPrevBtn!.disabled = viewYear === now.getFullYear() && viewMonth === now.getMonth();
+    const monthsAhead = (viewYear - now.getFullYear()) * 12 + (viewMonth - now.getMonth());
+    calNextBtn!.disabled = monthsAhead >= MAX_MONTHS_AHEAD;
+
+    calGrid!.innerHTML = '';
+
+    const firstOfMonth = new Date(viewYear, viewMonth, 1);
+    const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+    const leading = (firstOfMonth.getDay() + 6) % 7; // Monday-first offset
+
+    for (let i = 0; i < leading; i++) {
+      const blank = document.createElement('span');
+      blank.className = 'resv-day resv-day--empty';
+      calGrid!.appendChild(blank);
+    }
+
+    const blocks = await fetchMonthAvailability(viewYear, viewMonth);
+    const events = blocks.filter((b) => b.kind === 'EVENT');
+
+    for (let day = 1; day <= daysInMonth; day++) {
+      const d = new Date(viewYear, viewMonth, day);
+      const key = dateKeyOf(d);
+      const isPast = key < todayKey;
+      const isClosedWeekday = !VALID_WEEKDAYS.includes(d.getDay());
+      const isFullyBlocked = !isPast && !isClosedWeekday && dayFullyBlocked(key, events);
+      const hasTimeLeftToday =
+        key !== todayKey || TIME_SLOTS.some((t) => t > currentTimeStr(now));
+      const bookable = !isPast && !isClosedWeekday && !isFullyBlocked && hasTimeLeftToday;
+
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'resv-day';
+      btn.disabled = !bookable;
+
+      const num = document.createElement('span');
+      num.textContent = String(day);
+      btn.appendChild(num);
+
+      if (bookable) {
+        const dot = document.createElement('span');
+        dot.className = 'resv-day-dot';
+        btn.appendChild(dot);
+        if (key === selectedDate) btn.classList.add('is-selected');
+        btn.addEventListener('click', () => {
+          selectedDate = key;
+          selectedTime = null;
+          calGrid!.querySelectorAll('.resv-day').forEach((c) => c.classList.remove('is-selected'));
+          btn.classList.add('is-selected');
+          renderTimes(key, events);
+        });
+      }
+
+      calGrid!.appendChild(btn);
+    }
+  }
+
+  calPrevBtn.addEventListener('click', () => {
+    viewMonth -= 1;
+    if (viewMonth < 0) {
+      viewMonth = 11;
+      viewYear -= 1;
+    }
+    void renderCalendar();
+  });
+  calNextBtn.addEventListener('click', () => {
+    viewMonth += 1;
+    if (viewMonth > 11) {
+      viewMonth = 0;
+      viewYear += 1;
+    }
+    void renderCalendar();
+  });
+
+  function renderTimes(dateKey: string, events: AvailabilityBlock[]) {
+    timesEl!.innerHTML = '';
+    const now = nowInBuenosAires();
+    const todayKey = dateKeyOf(now);
+    const isToday = dateKey === todayKey;
+    const nowStr = currentTimeStr(now);
+
+    TIME_SLOTS.filter((t) => !isToday || t > nowStr).forEach((time) => {
+      const slotStart = new Date(toStartAt(dateKey, time));
+      const slotEnd = new Date(slotStart.getTime() + DEFAULT_DURATION_MINUTES * 60_000);
+      const blocked = events.some(
+        (e) => new Date(e.startAt) < slotEnd && new Date(e.endAt) > slotStart,
+      );
+
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'resv-chip';
+      btn.textContent = time;
+      btn.disabled = blocked;
+      if (!blocked) {
+        btn.addEventListener('click', () => {
+          selectedTime = time;
+          timesEl!.querySelectorAll('.resv-chip').forEach((c) => c.classList.remove('is-selected'));
+          btn.classList.add('is-selected');
+        });
+      }
+      timesEl!.appendChild(btn);
+    });
+  }
+
+  minusBtn.addEventListener('click', () => {
+    const value = Math.max(1, Number(partyInput!.value || 1) - 1);
+    partyInput!.value = String(value);
+  });
+  plusBtn.addEventListener('click', () => {
+    const value = Math.max(1, Number(partyInput!.value || 1) + 1);
+    partyInput!.value = String(value);
+  });
+
+  function resetFeedback() {
+    errorEl!.hidden = true;
+    errorEl!.textContent = '';
+    successEl!.hidden = true;
+    successEl!.textContent = '';
+  }
+
+  function openModal() {
+    resetFeedback();
+    form!.hidden = false;
+    form!.reset();
+    partyInput!.value = '2';
+    selectedDate = null;
+    selectedTime = null;
+    timesEl!.innerHTML = '<p class="resv-chip-placeholder">Elegí un día primero</p>';
+    const now = nowInBuenosAires();
+    viewYear = now.getFullYear();
+    viewMonth = now.getMonth();
+    void renderCalendar();
+    modal!.showModal();
+  }
+
+  function closeModal() {
+    modal!.close();
+  }
+
+  // Delegate: any link/button that points to the reservation flow opens the modal instead.
+  document.addEventListener('click', (event) => {
+    const target = (event.target as HTMLElement)?.closest(
+      'a[href="/reservas"], [data-reservation-trigger]',
+    );
+    if (!target) return;
+    event.preventDefault();
+    openModal();
+  });
+
+  document.querySelectorAll('[data-reservation-close]').forEach((btn) =>
+    btn.addEventListener('click', closeModal),
+  );
+
+  // Close when clicking the backdrop (click lands on the dialog element itself, not its content).
+  modal.addEventListener('click', (event) => {
+    if (event.target === modal) closeModal();
+  });
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    resetFeedback();
+
+    const data = new FormData(form);
+    const name = String(data.get('name') || '').trim();
+    const email = String(data.get('email') || '').trim();
+    const partySize = Number(data.get('partySize'));
+    const notes = String(data.get('notes') || '').trim();
+
+    if (!selectedDate || !selectedTime) {
+      errorEl!.textContent = 'Elegí el día y la hora.';
+      errorEl!.hidden = false;
+      return;
+    }
+    if (!name || !partySize || partySize < 1) {
+      errorEl!.textContent = 'Completá nombre y cantidad de personas.';
+      errorEl!.hidden = false;
+      return;
+    }
+    if (!email) {
+      errorEl!.textContent = 'Indicá un email de contacto.';
+      errorEl!.hidden = false;
+      return;
+    }
+
+    submitBtn!.disabled = true;
+    submitBtn!.textContent = 'Reservando…';
+
+    try {
+      const reservation = await createReservation({
+        name,
+        email,
+        partySize,
+        startAt: toStartAt(selectedDate, selectedTime),
+        notes: notes || undefined,
+      });
+
+      const when = new Date(reservation.start_at).toLocaleString('es-AR', {
+        dateStyle: 'long',
+        timeStyle: 'short',
+        timeZone: 'America/Argentina/Buenos_Aires',
+      });
+
+      form!.hidden = true;
+      successEl!.textContent = `¡Listo! Tu mesa para ${reservation.party_size} está reservada para el ${when}. Te enviamos la confirmación por email.`;
+      successEl!.hidden = false;
+    } catch (err) {
+      const message =
+        err instanceof ReservationError
+          ? err.message
+          : 'No pudimos procesar la reserva. Intentá de nuevo.';
+      errorEl!.textContent = message;
+      errorEl!.hidden = false;
+    } finally {
+      submitBtn!.disabled = false;
+      submitBtn!.textContent = 'Confirmar reserva';
+    }
+  });
+</script>
