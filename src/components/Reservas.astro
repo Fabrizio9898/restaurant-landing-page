@@ -8,11 +8,8 @@ const { reservation } = site;
     <p class="section-label">Mesas</p>
     <h2 class="section-title text-[var(--color-cream)]">{reservation.title}</h2>
     <p class="mt-4 text-[var(--color-cream)]/75 leading-relaxed">{reservation.body}</p>
-    <span
-      class="mt-8 inline-block border border-[var(--color-gold)]/50 px-10 py-3 text-xs uppercase tracking-[0.25em] text-[var(--color-gold-light)] opacity-80 cursor-not-allowed"
-      aria-disabled="true"
-    >
+    <button type="button" class="btn btn-gold mt-8" data-reservation-trigger>
       {reservation.cta}
-    </span>
+    </button>
   </div>
 </section>

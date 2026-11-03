@@ -5,37 +5,37 @@
 
 const menuMidi = [
   {
-    name: "* El Calamar",
-    price: "18 €",
-    desc: "Calamares a la plancha, ensalada de quinoa, apio, pepino, aceitunas negras y salsa bagna cauda."
+    name: "Milanesa a la napolitana",
+    price: "$24.200",
+    desc: "Con guarnición a elección: papas fritas, ensalada de lechuga y tomate, o de zanahoria y huevo."
   },
   {
-    name: "Risotto Primavera",
-    price: "16 €",
-    desc: "Risotto cremoso con verduras de temporada, parmesano y un toque de azafrán."
+    name: "Sorrentinos de jamón y ricota",
+    price: "$23.650",
+    desc: "Con salsa a elección: fileto, pesto, salsa rosa o boloñesa."
   },
   {
-    name: "Ensalada Niçoise",
-    price: "14 €",
-    desc: "Atún, judías verdes, huevos cocidos, tomates, aceitunas y aderezo de mostaza."
+    name: "Picada fría",
+    price: "$33.000",
+    desc: "Jamón, queso, jamón crudo, bondiola, salame, aceitunas, berenjenas al escabeche y porotos a la provenzal."
   }
 ];
 
 const menuSoir = [
   {
-    name: "Filete de ternera",
-    price: "48 €",
-    desc: "Filete de ternera Black Angus asado, puré de patatas ahumadas, chalotas confitadas con ajo negro, champiñones, bresaola."
+    name: "Parrillada completa",
+    price: "$36.850",
+    desc: "Precio por persona. Chorizo, morcilla, pollo, pechito de cerdo, asado y vacío. Servicio en bandejas."
   },
   {
-    name: "Magret de Pato",
-    price: "36 €",
-    desc: "Pato glaseado con miel y especias, acompañado de gratén de patatas y salsa de frutos rojos."
+    name: "Peceto de cerdo envuelto en panceta",
+    price: "$29.800",
+    desc: "Con salsa de miel y mostaza."
   },
   {
-    name: "Lubina al Horno",
-    price: "42 €",
-    desc: "Lubina fresca con costra de hierbas, servida con espárragos trigueros y emulsión de limón."
+    name: "Agnolottis Portales",
+    price: "$23.650",
+    desc: "Rellenos de puré de papas y panceta."
   }
 ];
 ---
@@ -122,13 +122,8 @@ const menuSoir = [
       </article>
       
       <div class="cta-wrapper mt-lg">
-        <a href="/reservas" class="btn">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 29 27" width="24" height="24" class="mr-xs" aria-hidden="true">
-            <path fill="currentColor" d="M15.134 0h2.523c-1.013 7.988 6.726 12.314 10.719 13.478C17.782 11.881 15.134 3.827 15.134 0ZM28.376 13.478c-3.993 1.166-11.732 5.492-10.72 13.478h-2.522c0-3.827 2.648-11.88 13.242-13.478Z"></path>
-            <path fill="currentColor" d="M28.376 13.478 0 12.198v3.2l28.375-1.923"></path>
-          </svg>
-          Reserva ahora y elige tus platos con descuento.
-        </a>
+        <a href="/menu" class="btn cta-primary">Ver menú completo</a>
+        <a href="/reservas" class="btn">Reservar</a>
       </div>
     </div>
   </div>
@@ -274,13 +269,28 @@ justify-content: center;}
   }
   
   /* Utils de spacing */
+  .cta-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+  }
+  .cta-primary {
+    background: var(--color-blue);
+    border-color: var(--color-blue);
+    color: var(--color-white);
+  }
+  @media (min-width: 640px) {
+    .cta-wrapper {
+      flex-direction: row;
+      align-items: center;
+    }
+  }
   .mt-lg { margin-top: var(--spacing-lg); }
   .mb-md { margin-bottom: var(--spacing-md); }
   .mb-lg { margin-bottom: var(--spacing-lg); }
   .pr-lg { padding-right: var(--spacing-lg); }
   .pt-xl { padding-top: var(--spacing-xl); }
   .pb-xl { padding-bottom: var(--spacing-xl); }
-  .mr-xs { margin-right: var(--spacing-xs); }
 </style>
 
 <script>
