@@ -25,10 +25,30 @@ const { title = site.name, description = site.description } = Astro.props;
 		<meta name="generator" content={Astro.generator} />
 	</head>
 	<body>
+		<p class="demo-badge">Proyecto de demo — no operativo</p>
 		<slot />
 		<ReservationModal />
 	</body>
 </html>
+
+<style>
+	.demo-badge {
+		position: fixed;
+		bottom: 0.75rem;
+		left: 0.75rem;
+		z-index: 60;
+		margin: 0;
+		padding: 0.35rem 0.65rem;
+		font-family: var(--font-sans);
+		font-size: 0.65rem;
+		letter-spacing: 0.05em;
+		text-transform: uppercase;
+		background: var(--color-black);
+		color: var(--color-white);
+		border-radius: 2px;
+		opacity: 0.85;
+	}
+</style>
 
 <script>
 	// ponytail: reveal sections on scroll

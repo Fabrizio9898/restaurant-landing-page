@@ -85,7 +85,7 @@ const menu: MenuCategory[] = [
             desc: "Con salsa de miel y mostaza",
             price: "$29.800",
           },
-          { name: "Bife Portales", price: "$32.450" },
+          { name: "Bife Fogón", price: "$32.450" },
           {
             name: "Parrillada completa",
             desc: "Precio por persona. Chorizo, morcilla, pollo, pechito de cerdo, asado y vacío. Servicio en bandejas.",
@@ -110,7 +110,7 @@ const menu: MenuCategory[] = [
           { name: "Sorrentinos de calabaza y ricota", price: "$23.650" },
           { name: "Ravioles de verdura", price: "$23.650" },
           {
-            name: "Agnolottis Portales",
+            name: "Agnolottis Fogón",
             desc: "Rellenos de puré de papas y panceta",
             price: "$23.650",
           },
@@ -161,7 +161,7 @@ const menu: MenuCategory[] = [
         ],
       },
       {
-        title: "Cerveza tirada Portales",
+        title: "Cerveza tirada Fogón",
         note: "Variedades: Red IPA · Scottish · Honey · Golden · Session IPA.",
         items: [{ name: "Vaso de 370 cc", price: "$3.520" }],
       },
@@ -181,14 +181,14 @@ const menu: MenuCategory[] = [
 ];
 
 export const site = {
-  name: "Portales de Uribelarrea",
-  shortName: "PORTALES",
-  tagline: "Cocina de campo en el corazón de Uribelarrea",
+  name: "Fogón del Valle",
+  shortName: "FOGÓN",
+  tagline: "Cocina de campo en el corazón de Los Aromos",
   description:
-    "Restaurante rústico en Uribelarrea. Sabores de la tierra, fuego lento y buena mesa.",
+    "Restaurante rústico en Los Aromos. Sabores de la tierra, fuego lento y buena mesa.",
   about: {
     title: "Nuestra historia",
-    body: "En Portales de Uribelarrea abrimos las puertas a una cocina de campo honesta: productos de la zona, recetas de familia y un ambiente cálido entre madera y luz natural. Ideal para almuerzos de fin de semana y cenas con amigos.",
+    body: "En Fogón del Valle abrimos las puertas a una cocina de campo honesta: productos de la zona, recetas de familia y un ambiente cálido entre madera y luz natural. Ideal para almuerzos de fin de semana y cenas con amigos.",
     image:
       "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?q=80&w=1200&auto=format&fit=crop",
   },
@@ -214,15 +214,15 @@ export const site = {
     "https://images.unsplash.com/photo-1600891964099-90d2367269b9?q=80&w=800&auto=format&fit=crop",
   ],
   location: {
-    address: "Av. Valeria de Crotto, Uribelarrea, Provincia de Buenos Aires",
+    address: "Camino de la Posta s/n, Los Aromos, Provincia de Buenos Aires",
     mapEmbed:
-      "https://maps.google.com/maps?q=Portales+de+Uribelarrea,+Av.+Valeria+de+Crotto,+Uribelarrea,+Provincia+de+Buenos+Aires&t=&z=16&ie=UTF8&iwloc=&output=embed",
+      "https://maps.google.com/maps?q=Fogón+del+Valle,+Los+Aromos,+Provincia+de+Buenos+Aires&t=&z=16&ie=UTF8&iwloc=&output=embed",
     hours: [
       { days: "Vie – Dom", time: "11:00 – 17:00" },
       { days: "Lun – Jue", time: "Cerrado" },
     ],
     phone: "+54 9 11 0000-0000",
-    email: "hola@portalesdeuribelarrea.example",
+    email: "hola@fogondelvalle.example",
   },
   social: {
     instagram: "#",

@@ -1,7 +1,8 @@
 // Fixed offset: the restaurant is always Argentina time, regardless of the visitor's browser timezone.
 const RESTAURANT_UTC_OFFSET = '-03:00';
 
-const API_URL = import.meta.env.PUBLIC_API_URL ?? 'http://localhost:3000';
+// Demo project, no backend. Real API base URL kept for reference:
+// const API_URL = import.meta.env.PUBLIC_API_URL ?? 'http://localhost:3000';
 
 export interface ReservationPayload {
   name: string;
@@ -42,49 +43,73 @@ export function toStartAt(date: string, time: string): string {
   return `${date}T${time.slice(0, 5)}:00${RESTAURANT_UTC_OFFSET}`;
 }
 
+// Demo project, no backend: mock the reservation instead of hitting an API.
+// Real API call kept commented for reference:
+// export async function createReservation(
+//   payload: ReservationPayload,
+// ): Promise<Reservation> {
+//   let response: Response;
+//   try {
+//     response = await fetch(`${API_URL}/reservations`, {
+//       method: 'POST',
+//       headers: { 'Content-Type': 'application/json' },
+//       body: JSON.stringify({ kind: 'REGULAR', ...payload }),
+//     });
+//   } catch {
+//     throw new ReservationError(
+//       'No pudimos conectar con el servidor. Revisá tu conexión e intentá de nuevo.',
+//       0,
+//     );
+//   }
+//
+//   const body = await response.json().catch(() => null);
+//
+//   if (!response.ok) {
+//     const raw = body?.message;
+//     const message = Array.isArray(raw)
+//       ? raw.join(' ')
+//       : raw || 'No pudimos procesar la reserva. Intentá de nuevo.';
+//     throw new ReservationError(message, response.status);
+//   }
+//
+//   return body as Reservation;
+// }
 export async function createReservation(
   payload: ReservationPayload,
 ): Promise<Reservation> {
-  let response: Response;
-  try {
-    response = await fetch(`${API_URL}/reservations`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ kind: 'REGULAR', ...payload }),
-    });
-  } catch {
-    throw new ReservationError(
-      'No pudimos conectar con el servidor. Revisá tu conexión e intentá de nuevo.',
-      0,
-    );
-  }
+  await new Promise((resolve) => setTimeout(resolve, 650));
 
-  const body = await response.json().catch(() => null);
-
-  if (!response.ok) {
-    const raw = body?.message;
-    const message = Array.isArray(raw)
-      ? raw.join(' ')
-      : raw || 'No pudimos procesar la reserva. Intentá de nuevo.';
-    throw new ReservationError(message, response.status);
-  }
-
-  return body as Reservation;
+  return {
+    id: String(Date.now()),
+    kind: 'REGULAR',
+    customer_name: payload.name,
+    party_size: payload.partySize,
+    start_at: payload.startAt,
+    end_at: payload.startAt,
+    status: 'CONFIRMED',
+  };
 }
 
 // Public blocks (VIP + EVENT) in range; used to grey out full days/slots on the calendar.
-// Failures are non-fatal for this call: the calendar still works, just without that hint.
+// Demo project: hardcoded to no blocks, so every open day/slot shows as available (green).
+// Real API call kept commented for reference:
+// export async function getAvailability(
+//   fromISO: string,
+//   toISO: string,
+// ): Promise<AvailabilityBlock[]> {
+//   try {
+//     const response = await fetch(
+//       `${API_URL}/availability?from=${encodeURIComponent(fromISO)}&to=${encodeURIComponent(toISO)}`,
+//     );
+//     if (!response.ok) return [];
+//     return (await response.json()) as AvailabilityBlock[];
+//   } catch {
+//     return [];
+//   }
+// }
 export async function getAvailability(
-  fromISO: string,
-  toISO: string,
+  _fromISO: string,
+  _toISO: string,
 ): Promise<AvailabilityBlock[]> {
-  try {
-    const response = await fetch(
-      `${API_URL}/availability?from=${encodeURIComponent(fromISO)}&to=${encodeURIComponent(toISO)}`,
-    );
-    if (!response.ok) return [];
-    return (await response.json()) as AvailabilityBlock[];
-  } catch {
-    return [];
-  }
+  return [];
 }
