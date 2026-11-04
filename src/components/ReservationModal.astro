@@ -690,11 +690,8 @@
         timeZone: 'America/Argentina/Buenos_Aires',
       });
 
-      form!.hidden = true;
-      successEl!.textContent = `¡Listo! Tu mesa para ${reservation.party_size} está reservada para el ${when}. Te enviamos la confirmación por email.`;
-      successEl!.hidden = false;
       notyf.success(`Reserva confirmada para el ${when}`);
-      setTimeout(closeModal, 1600);
+      closeModal();
     } catch (err) {
       const message =
         err instanceof ReservationError

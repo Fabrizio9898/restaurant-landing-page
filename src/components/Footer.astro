@@ -13,8 +13,13 @@ import { site } from '../data/site';
       <li><a href={site.social.facebook} class="hover:text-(--color-gold)">Facebook</a></li>
       <li><a href={site.social.tiktok} class="hover:text-(--color-gold)">TikTok</a></li>
     </ul>
-    <p class="text-xs text-(--color-cream)/40">
-      © {new Date().getFullYear()} {site.name}
-    </p>
+    <div class="md:text-right">
+      <p class="text-xs text-(--color-cream)/40">
+        © {new Date().getFullYear()} {site.name}
+      </p>
+      <p class="mt-1 text-xs text-(--color-cream)/40">
+        Sitio de demostración — las reservas no son reales.
+      </p>
+    </div>
   </div>
 </footer>
