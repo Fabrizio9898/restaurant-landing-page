@@ -42,34 +42,21 @@ export function toStartAt(date: string, time: string): string {
   return `${date}T${time.slice(0, 5)}:00${RESTAURANT_UTC_OFFSET}`;
 }
 
+// Demo project, no backend: mock the reservation instead of hitting an API.
 export async function createReservation(
   payload: ReservationPayload,
 ): Promise<Reservation> {
-  let response: Response;
-  try {
-    response = await fetch(`${API_URL}/reservations`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ kind: 'REGULAR', ...payload }),
-    });
-  } catch {
-    throw new ReservationError(
-      'No pudimos conectar con el servidor. Revisá tu conexión e intentá de nuevo.',
-      0,
-    );
-  }
+  await new Promise((resolve) => setTimeout(resolve, 650));
 
-  const body = await response.json().catch(() => null);
-
-  if (!response.ok) {
-    const raw = body?.message;
-    const message = Array.isArray(raw)
-      ? raw.join(' ')
-      : raw || 'No pudimos procesar la reserva. Intentá de nuevo.';
-    throw new ReservationError(message, response.status);
-  }
-
-  return body as Reservation;
+  return {
+    id: crypto.randomUUID(),
+    kind: 'REGULAR',
+    customer_name: payload.name,
+    party_size: payload.partySize,
+    start_at: payload.startAt,
+    end_at: payload.startAt,
+    status: 'CONFIRMED',
+  };
 }
 
 // Public blocks (VIP + EVENT) in range; used to grey out full days/slots on the calendar.

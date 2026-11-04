@@ -368,6 +368,20 @@
     ReservationError,
     type AvailabilityBlock,
   } from '../lib/reservations';
+  import { Notyf } from 'notyf';
+  import 'notyf/notyf.min.css';
+
+  const notyf = new Notyf({
+    duration: 4000,
+    position: { x: 'center', y: 'top' },
+    types: [
+      {
+        type: 'success',
+        background: 'var(--color-black)',
+        icon: false,
+      },
+    ],
+  });
 
   const TIME_SLOTS = [
     '11:00', '11:30', '12:00', '12:30', '13:00', '13:30',
@@ -679,6 +693,8 @@
       form!.hidden = true;
       successEl!.textContent = `¡Listo! Tu mesa para ${reservation.party_size} está reservada para el ${when}. Te enviamos la confirmación por email.`;
       successEl!.hidden = false;
+      notyf.success(`Reserva confirmada para el ${when}`);
+      setTimeout(closeModal, 1600);
     } catch (err) {
       const message =
         err instanceof ReservationError
